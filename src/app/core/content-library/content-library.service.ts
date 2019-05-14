@@ -62,6 +62,12 @@ export class ContentLibraryService {
       .map((result: Response) => result.json());
   }
 
+  getShowAllList(path: string): Observable<CLI.IContentStatsResult[]> {
+    return this.http
+      .get(`${this.connectApiUrl}/portal-content/libraryitems?contentpath=${path}`)
+      .map((result: Response) => result.json());
+  }
+
   getContentItem(contentId: string): Observable<ContentItem> {
     return this.syncGatewayService.get(CONTENT_BUCKET, contentId).map(contentItem => {
       const item = new ContentItem(<CLI.IContentItem>contentItem);
@@ -75,11 +81,11 @@ export class ContentLibraryService {
       .mergeMap((result: Response) => Observable.of(result.json()));
   }
 
-  createFolder(parentPath: string, title: string): Observable<EmptyFolder> {
+  createFolder(parentPath: string, title: string,folderstate:boolean): Observable<EmptyFolder> {
     const emptyFolder = new EmptyFolder();
     emptyFolder._id = UUID.UUID();
     emptyFolder.created_date = moment().format();
-    emptyFolder.library_path = parentPath === '/' ? `/${title}` : `${parentPath}/${title}`;
+    emptyFolder.library_path = parentPath === '/' ? `/${title}/${folderstate}` : `${parentPath}/${title}/${folderstate}`;
     return this.syncGatewayService
       .upsert(CONTENT_BUCKET, emptyFolder)
       .mergeMap((result: ISyncGatewayModel) => {
@@ -113,6 +119,7 @@ export class ContentLibraryService {
       .mergeMap((result: ISyncGatewayModel) => {
         contentItem._rev = result._rev;
         if (tileImageBase64Data) {
+          console.log("================upsertnowContentItem============",contentItem)
           return this.syncGatewayService
             .sendUpdateDocumentAttachmentRequest(
               CONTENT_BUCKET,
@@ -120,7 +127,7 @@ export class ContentLibraryService {
               tileImageBase64Data,
               CLC.TILE_IMAGE_ATTACHMENT_NAME
             )
-            .mergeMap(() => this.getContentItem(contentItem._id));
+            .mergeMap(() => this.getContentItem(contentItem._id));            
         }
 
         return Observable.of(contentItem);
@@ -161,7 +168,6 @@ export class ContentLibraryService {
     this.uiEventService.dispatch(
       new QueueUploadMessage({ content: contentItem, s3_key: key, file: file })
     );
-
     return Observable.of(contentItem);
   }
 }

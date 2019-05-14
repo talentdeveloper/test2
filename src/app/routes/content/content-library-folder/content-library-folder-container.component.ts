@@ -46,6 +46,8 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
   }
 
   ngOnInit() {
+
+
     this.loadActiveFavorites();
     this.loadContentAnalytics();
     this.loadAllLibraryPaths();
@@ -70,7 +72,7 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
     } else {
       const newPath =
         item.library_path === '/' ? `/${item.title}` : `${item.library_path}/${item.title}`;
-      this.loadPath(newPath);
+      this.loadPath(newPath);      
       this.router.navigate(['content', 'library', 'folder', this.convertPathToUrlPath(newPath)]);
     }
   }
@@ -87,7 +89,7 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
     }
 
     if (changeEvent.addFolder) {
-      this.addFolder(changeEvent.addFolder.newFolderName);
+      this.addFolder(changeEvent.addFolder.newFolderName,changeEvent.addFolder.newFolderState);
       return;
     }
 
@@ -102,7 +104,7 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
     }
 
     if (changeEvent.deleteItems) {
-      this.deleteItems(changeEvent.deleteItems.libraryItems);
+      this.deleteItems(changeEvent.deleteItems.contentItem);
       return;
     }
 
@@ -111,10 +113,11 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
     }
   }
 
-  addFolder(title: string) {
-    this.contentLibraryService.createFolder(this.path, title).subscribe(
+  addFolder(title: string,folderstate:boolean) {
+    this.contentLibraryService.createFolder(this.path, title,folderstate).subscribe(
       () => {
         this.loadPath(this.path);
+        console.log(this.path)
       },
       error => {
         console.log(error);
@@ -162,19 +165,20 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
       (results: IApiBulkUpdateResult[]) => {
         const ok = !results.filter(item => !!item.error).length;
         if (!ok) {
-          console.log(results);
         }
-        this.dispatchChangeMessage(ok, 'Delete ' + (ok ? ' successful!' : ' failed.'));
+        console.log("===============ok Result +++++++++++",results);
+        this.dispatchChangeMessage(ok, 'Disible ' + (ok ? ' successful!' : ' failed.'));
         this.loadPath(this.path);
       },
       () => {
-        this.dispatchChangeMessage(false, 'Delete failed. Please refresh and try again.');
+        this.dispatchChangeMessage(false, 'Disible failed. Please refresh and try again.');
         this.loadPath(this.path);
       }
     );
   }
 
   private loadPath(path: string) {
+   
     Observable.forkJoin([
       this.loadActiveFavorites(),
       this.loadContentAnalytics(),
@@ -199,6 +203,7 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
               : null;
           }
         });
+        console.log("<<<< testing!",this.libraryItems)
 
         this.path = path;
 
@@ -278,6 +283,53 @@ export class ContentLibraryFolderContainerComponent extends ContentLibraryBaseCo
         this.path = '/';
         this.isSearchResults = true;
         this.setBreadcrumbs(this.path, false, true);
+      },
+      () => {
+        this.dispatchChangeMessage(
+          false,
+          'Loading folder contents failed. Please refresh and try again.'
+        );
+      }
+    );
+  }
+
+  private showAllList() {
+    // if (!newFolderState) {
+    //   this.isSearchResults = false;
+    //   this.loadPath('/');
+    //   this.router.navigate(['content', 'library', 'folder', this.convertPathToUrlPath('/')]);
+    //   return;
+    // }
+
+    Observable.forkJoin([
+      this.loadActiveFavorites(),
+      this.loadContentAnalytics(),
+      this.contentLibraryService.getShowAllList(this.path)
+    ]).subscribe(
+      ([favCounts, analyticsMap, contentResults]: [
+        CLI.IActiveFavoritesMap,
+        CLI.IContentAnalyticsMap,
+        CLI.IContentStatsResult[]
+      ]) => {
+        this.libraryItems = contentResults;
+        // .filter(item => item.doc_type !== 'library-folder');
+
+        this.libraryItems.forEach(item => {
+          if (item.doc_type === 'content-item' && item._id) {
+            item.active_favorites = favCounts[item._id];
+            item.times_accessed = analyticsMap[item._id]
+              ? analyticsMap[item._id].times_accessed
+              : null;
+            item.last_time_used = analyticsMap[item._id]
+              ? analyticsMap[item._id].last_time_used
+              : null;
+          }
+        });
+        console.log("<<<< testing!",this.libraryItems)
+
+        //this.path = path;
+
+        this.setBreadcrumbs(this.path, false);
       },
       () => {
         this.dispatchChangeMessage(

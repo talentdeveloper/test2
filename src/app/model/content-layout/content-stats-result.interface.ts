@@ -15,4 +15,11 @@ export interface IContentStatsResult {
     rehab: boolean;
   };
   platforms?: string;
+  //selpackages?:string;
+  selpackages: {
+    engage: boolean;
+    focus: boolean;
+    rehab: boolean; 
+  };
+  newFolderState:boolean;
 }

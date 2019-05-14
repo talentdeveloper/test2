@@ -46,6 +46,45 @@
                 </div>
 
                 <div class="form-group">
+                  <label class="control-label">Select Package</label>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.selpackages.controls.engage"
+                          />
+                          <em class="bg-indigo-500"></em>Engange Standard
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.selpackages.controls.focus"
+                          />
+                          <em class="bg-indigo-500"></em> Focus Standard
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.selpackages.controls.rehab"
+                          />
+                          <em class="bg-indigo-500"></em> Rehub Standard
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
                   <label class="control-label">Platforms</label>
                   <div class="row">
                     <div class="col-sm-4">

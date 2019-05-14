@@ -93,12 +93,13 @@ export class ContentLibraryItemComponent {
     });
   }
 
-  submitDelete() {
-    this.changeEvent.emit({
-      deleteItems: {
-        contentItem: this.contentItem
-      }
-    });
-    this.deleteModal.hide();
-  }
+  // submitDelete() {
+  //   this.changeEvent.emit({
+  //     deleteItems: {
+  //       contentItem: this.contentItem,
+  //       newFolderState: true
+  //     }
+  //   });
+  //   this.deleteModal.hide();
+  // }
 }

@@ -67,6 +67,11 @@ export class ContentLibraryItemFormComponent implements OnInit {
         android: new FormControl(!!this.contentItem.platforms.android),
         pc: new FormControl(!!this.contentItem.platforms.pc)
       }),
+      selpackages: new FormGroup({
+        engage: new FormControl(!!this.contentItem.selpackages.engage),
+        focus: new FormControl(!!this.contentItem.selpackages.focus),
+        rehab: new FormControl(!!this.contentItem.selpackages.rehab)        
+      }),
       products: new FormGroup({
         engage: new FormControl(!!this.contentItem.products.engage),
         focus: new FormControl(!!this.contentItem.products.focus),
@@ -110,7 +115,7 @@ export class ContentLibraryItemFormComponent implements OnInit {
       content_url: [this.contentItem.content_url || ''],
 
       // Windows exe
-      windows_exe_locations: [(this.contentItem.windows_exe_locations || []).join('\n')]
+      windows_exe_locations: [(this.contentItem.windows_exe_locations || []).join('\n')],
     });
   }
 
@@ -269,7 +274,6 @@ export class ContentLibraryItemFormComponent implements OnInit {
       });
       return;
     }
-
     const fileRequired = this.fileUploadRequired();
 
     const additionalValues = {
@@ -289,9 +293,7 @@ export class ContentLibraryItemFormComponent implements OnInit {
         ? formData.windows_exe_locations.split('\n')
         : undefined
     };
-
     const item = new ContentItem(Object.assign({}, this.contentItem, formData, additionalValues));
-
     this.changeEvent.emit({
       saveContentItem: {
         contentItem: item,

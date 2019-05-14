@@ -32,7 +32,8 @@ export class ContentLibraryListComponent {
   changeDetails: CLI.IChangeEvent = {};
   selectedItems: CLI.IContentStatsResult[] = [];
   newFolderName = '';
-  moveToPath = '';
+  newFolderState = false;
+  moveToPath = '';  
 
   contentItem: ContentItem;
 
@@ -41,6 +42,12 @@ export class ContentLibraryListComponent {
       title: 'Name',
       key: 'title',
       sort: 'asc',
+      type: 'string'
+    },
+    {
+      title: 'Package',
+      key: 'selpackages',
+      sort: '',
       type: 'string'
     },
     {
@@ -134,13 +141,14 @@ export class ContentLibraryListComponent {
   }
 
   emitChanges() {
-    console.log(this.changeDetails);
     this.changeEvent.emit(this.changeDetails);
   }
 
   clearChanges(clearSelected: boolean = true) {
+    //console.log(clearSelected);
     this.changeDetails = {};
     this.newFolderName = '';
+    this.newFolderState=false;
     this.moveToPath = '';
     this.contentItem = null;
     if (clearSelected) {
@@ -190,9 +198,11 @@ export class ContentLibraryListComponent {
    */
   showAddFolderModal() {
     this.newFolderName = '';
+    this.newFolderState = false;
     this.changeDetails = {
       addFolder: {
-        newFolderName: ''
+        newFolderName: '',
+        newFolderState: false
       }
     };
 
@@ -207,8 +217,8 @@ export class ContentLibraryListComponent {
     if (!this.newFolderNameIsValid()) {
       return;
     }
-
     this.changeDetails.addFolder.newFolderName = this.newFolderName;
+    this.changeDetails.addFolder.newFolderState = this.newFolderState;
     this.emitAndClearChange();
     this.addFolderModal.hide();
   }
@@ -220,6 +230,8 @@ export class ContentLibraryListComponent {
     this.changeDetails.addEditContentItem = { contentItem: null };
     this.emitAndClearChange();
   }
+
+  
 
   /**
    * Select items for delete or move
@@ -277,16 +289,16 @@ export class ContentLibraryListComponent {
     if (nonEmptyFolders.length > 0) {
       this.changeDetails = {
         error: {
-          message: 'Not all folders are empty. Only empty folders can be deleted.'
+          message: 'Not all folders are empty. Only empty folders can be diabled.'
         }
       };
       this.emitAndClearChange();
       return;
     }
-
     this.changeDetails = {
       deleteItems: {
-        libraryItems: this.selectedItems
+        contentItem: this.selectedItems,
+        newFolderState: true
       }
     };
 
@@ -294,6 +306,7 @@ export class ContentLibraryListComponent {
   }
 
   submitDelete() {
+    this.changeDetails.deleteItems.newFolderState=true;
     this.emitAndClearChange();
     this.deleteModal.hide();
   }
@@ -314,5 +327,16 @@ export class ContentLibraryListComponent {
     this.changeEvent.emit({
       search: { searchText }
     });
+  }
+
+  /**
+   * Show all list.
+   */
+  showAllList() {
+    console.log('showAllList()------------------');
+    this.emitAndClearChange();
+    // this.changeEvent.emit({
+    //   search: { "searchText" }
+    // });
   }
 }

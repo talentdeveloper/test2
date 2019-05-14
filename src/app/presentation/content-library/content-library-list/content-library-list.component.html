@@ -2,7 +2,7 @@
   <div class=" panel-body">
     <div class="panel-body">
       <div class="row mb-lg">
-        <div class="col-sm-6">
+        <div class="col-sm-5">
           <div class="input-group">
             <span class="input-group-addon"><em class="icon-magnifier"></em></span>
             <input
@@ -17,13 +17,23 @@
             >
           </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-2">
+          <div class="checkbox">
+            <label>
+              <input
+                type="checkbox" data-md-icheck (change)="showAllList()"
+              />
+              <em class="bg-indigo-500"></em> Show All List
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-5">
           <button
             class="btn btn-danger btn-outline pull-right ml-sm"
             [disabled]="!selectedItems.length"
             (click)="showDeleteFolderModal()"
           >
-            Delete
+            Disable
           </button>
           <button
             class="btn btn-purple btn-outline pull-right ml-sm"
@@ -292,7 +302,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title pull-left">
-          Delete selected empty folders<br />and selected content items
+          Disible selected empty folders<br />and selected content items
         </h4>
         <button type="button" class="close pull-right" aria-label="Close" (click)="cancelModal()">
           <span aria-hidden="true">&times;</span>

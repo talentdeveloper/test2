@@ -30,8 +30,7 @@ export class ContentLibraryAddItemContainerComponent extends ContentLibraryBaseC
   }
 
   submit(submittedItem: CLI.IChangeEvent) {
-    console.log(submittedItem);
-    if (submittedItem.saveContentItem.cancelled) {
+    if (submittedItem.saveContentItem.cancelled) { 
       this.router.navigate(['content', 'library', 'folder', this.urlPath]);
       return;
     }
@@ -46,7 +45,7 @@ export class ContentLibraryAddItemContainerComponent extends ContentLibraryBaseC
         console.log(updatedItem);
         return this.contentLibraryService.uploadContentFile(updatedItem, contentFile);
       })
-      .subscribe(() => {
+      .subscribe(() => { 
         this.dispatchChangeMessage(true, 'Content item creation successful!');
         this.router.navigate(['content', 'library', 'folder', this.urlPath]);
       });

@@ -15,6 +15,11 @@ export class ContentItem extends SyncGatewayModel implements CLI.IContentItem {
     android: false,
     pc: false
   };
+  selpackages = {
+    engage: false,
+    focus: false,
+    rehab: false 
+  };
   products = {
     engage: false,
     focus: false,
@@ -79,6 +84,7 @@ export class ContentItem extends SyncGatewayModel implements CLI.IContentItem {
     this.display_type = props.display_type;
     this.content_type = props.content_type;
     this.platforms = props.platforms;
+    this.selpackages = props.selpackages;
     this.products = props.products;
     this.keywords = props.keywords;
     this.accessibility = props.accessibility;

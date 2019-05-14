@@ -185,7 +185,7 @@ export class PortalAPIService {
     const data = {
       file_name: filename,
       file_contents: base64Data
-    };
+    };    
 
     return this.sendRequest(url, data, RequestMethod.Post, false);
   }

@@ -14,6 +14,11 @@ export namespace ContentLibraryInterfaces {
       android: boolean;
       pc: boolean;
     };
+    selpackages: {
+      engage: boolean;
+      focus: boolean;
+      rehab: boolean; 
+    };
     products: {
       engage: boolean;
       focus: boolean;
@@ -67,6 +72,11 @@ export namespace ContentLibraryInterfaces {
     platforms: {
       android: boolean;
       pc: boolean;
+    };
+    selpackages: {
+      engage: boolean;
+      focus: boolean;
+      rehab: boolean; 
     };
     products: {
       engage: boolean;
@@ -131,6 +141,12 @@ export namespace ContentLibraryInterfaces {
       rehab: boolean;
     };
     platforms?: string;
+    selpackages: {
+      engage: boolean;
+      focus: boolean;
+      rehab: boolean; 
+    };
+    newFolderState:boolean;
   }
 
   export interface ISelectedItems {
@@ -145,6 +161,7 @@ export namespace ContentLibraryInterfaces {
   export interface IChangeEvent {
     addFolder?: {
       newFolderName: string;
+      newFolderState: boolean;
     };
     renameFolder?: {
       oldTitle: string;
@@ -164,8 +181,8 @@ export namespace ContentLibraryInterfaces {
       newPath: string;
     };
     deleteItems?: {
-      contentItem?: ContentItem;
-      libraryItems?: IContentStatsResult[];
+      contentItem?: IContentStatsResult[];
+      newFolderState?: boolean;
     };
     search?: {
       searchText: string;

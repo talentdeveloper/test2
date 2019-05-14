@@ -12,9 +12,11 @@ export const environment = {
   },
   portal: {
     apiURL: 'https://api-qa.in2lolympus.com'
+    //apiURL: 'http://localhost:3000'
   },
   connectApi: {
-    url: 'https://awsapi-qa.in2lconnect.com/latest',
+    //url: 'https://awsapi-qa.in2lconnect.com/latest',
+    url: 'http://localhost:3000',
     apiKey: '73mP6hMQ7M3OFAa8lVett8WnYoGp1MsY1Spe0DSS'
   },
   google: {

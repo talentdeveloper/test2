@@ -85,13 +85,15 @@ export class ContentLibraryItemContainerComponent extends ContentLibraryBaseCont
           last_time_used: null,
           times_accessed: null,
           active_favorites: null,
-          products: this.contentItem.products
+          products: this.contentItem.products,
+          selpackages:this.contentItem.selpackages,
+          newFolderState: true
         }
       ])
       .subscribe(
         result => {
           console.log(result);
-          this.dispatchChangeMessage(true, 'Content item delete successful!');
+          this.dispatchChangeMessage(true, 'Content item disible successful!');
           this.router.navigate(['content', 'library', 'folder', this.urlPath]);
         },
         error => {
@@ -105,7 +107,7 @@ export class ContentLibraryItemContainerComponent extends ContentLibraryBaseCont
   }
 
   private loadContentItemStats() {
-    const existingStat = this.libraryItems.find(stat => stat._id === this.contentId);
+    const existingStat = this.libraryItems.find(stat => stat._id === this.contentId);    
     if (!existingStat) {
       this.contentLibraryService
         .getContentLibraryItems(this.contentItem.library_path)
