@@ -1,0 +1,40 @@
+<div
+  class="modal fade"
+  bsModal
+  #modal="bs-modal"
+  [config]="{ backdrop: false }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="mySmallModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Are you sure you want to cancel?</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-bold">
+          You have made changes to this content record. Would you like to Discard Changes or
+          Continue Editing?
+        </p>
+        <div class="clearfix" *ngIf="!loading">
+          <button
+            type="button"
+            class="pull-left btn btn-danger"
+            aria-label="Delete"
+            (click)="cancelConfirm()"
+          >
+            Discard Changes
+          </button>
+          <button type="button" class="pull-right btn" aria-label="Close" (click)="modal.hide()">
+            Continue Editing
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

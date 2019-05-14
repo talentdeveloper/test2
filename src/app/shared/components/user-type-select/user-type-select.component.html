@@ -1,0 +1,217 @@
+<div [formGroup]="parentForm" *ngIf="viewReady">
+  <!-- ROLE TYPE SELECTOR (aka, Account Type) -->
+  <div class="form-group has-feedback">
+    <label class="control-label">Account Type</label>
+    <select
+      class="form-control"
+      formControlName="accountType"
+      *ngIf="accountTypeNames.length > 1"
+      (change)="onAccountTypeChange($event.target.value)"
+    >
+      <option value="">Please select an account type</option>
+      <option
+        *ngFor="let type of accountTypeNames"
+        [value]="type.id"
+        [selected]="type.id === selectedAccountType"
+      >
+        {{ type.text }}
+      </option>
+    </select>
+    <div *ngIf="accountTypeNames.length === 1">
+      {{ accountTypeNames[0].text }}
+      <input type="hidden" formControlName="accountType" [value]="accountTypeNames[0].text" />
+    </div>
+    <span class="text-danger" *ngIf="parentForm.controls['accountType'].hasError('required')"
+      >This field is required</span
+    >
+  </div>
+
+  <!-- ACCOUNT SELECTOR -->
+  <div class="form-group has-feedback" *ngIf="showAccountDropdown()">
+    <label class="control-label">Account</label>
+    <select
+      class="form-control"
+      formControlName="accountId"
+      *ngIf="accountNames.length > 1"
+      (change)="onAccountChange($event.target.value)"
+    >
+      <option value="">Please select an account</option>
+      <option
+        *ngFor="let account of accountNames"
+        [value]="account.id"
+        [selected]="account.id === selectedAccountId"
+      >
+        {{ account.text }}
+      </option>
+    </select>
+    <div *ngIf="accountNames.length === 1">
+      {{ accountNames[0].text }}
+      <input type="hidden" formControlName="accountId" [value]="selectedAccountId" />
+    </div>
+    <span class="text-danger" *ngIf="parentForm.controls['accountId'].hasError('required')"
+      >This field is required</span
+    >
+  </div>
+
+  <!-- FACILITY SELECTOR -->
+  <div class="form-group has-feedback" *ngIf="showFacilityDropdown()">
+    <label class="control-label">{{
+      facilityNames.length > 1 ? 'Communities' : 'Community'
+    }}</label>
+    <div *ngIf="facilityNames.length > 1">
+      <ng-select
+        [multiple]="true"
+        [allowClear]="true"
+        [items]="facilityNames"
+        [active]="selectedFacilities"
+        (selected)="handleAddFacility($event)"
+        (removed)="handleRemoveFacility($event)"
+        placeholder="No facilities selected"
+      >
+      </ng-select>
+      <span class="text-danger" *ngIf="!selectedFacilities.length">This field is required</span>
+    </div>
+    <div *ngIf="facilityNames.length === 1">
+      {{ facilityNames[0].text }}
+    </div>
+    <div *ngIf="!facilityNames.length">
+      No facilities exists for this account. You will not be able to use this account type for the
+      selected account until a facility is available.
+    </div>
+  </div>
+
+  <!-- Community User Account/Community -->
+  <div class="form-group" *ngIf="showFacilityUserForm()">
+    <label class="control-label">Account</label>
+    <div class="mb-lg">
+      {{ accountName() }}
+      <input type="hidden" formControlName="accountId" [value]="defaultAccountId" />
+    </div>
+    <label class="control-label">Community</label>
+    <div class="mb-lg">
+      {{ facilityName() }}
+      <input type="hidden" formControlName="facilityIds" [value]="defaultFacilityIds" />
+    </div>
+  </div>
+
+  <!-- EMAIL -->
+  <div class="form-group" *ngIf="showEmail()">
+    <label class="control-label">Enter An Email Address</label>
+    <input class="form-control" type="text" placeholder="Email Address" formControlName="email" />
+    <span class="text-danger" *ngIf="parentForm.controls['email'].hasError('required')"
+      >This field is required</span
+    >
+    <span class="text-danger" *ngIf="parentForm.controls['email'].hasError('email')">
+      This field must be a valid email address
+    </span>
+  </div>
+
+  <!-- FACILITY USER FORM -->
+  <div class="form-group has-feedback" *ngIf="showFacilityUserForm()">
+    <div class="form-group">
+      <label class="control-label">First Name</label>
+      <input
+        class="form-control"
+        placeholder="First Name"
+        type="text"
+        name="firstName"
+        formControlName="firstName"
+        tabindex="0"
+        aria-invalid="true"
+      />
+      <span class="text-danger" *ngIf="parentForm.controls['firstName'].hasError('required')"
+        >This field is required</span
+      >
+    </div>
+    <div class="form-group">
+      <label class="control-label">Last Name</label>
+      <input
+        class="form-control"
+        placeholder="Last Name"
+        type="text"
+        name="lastName"
+        formControlName="lastName"
+        tabindex="0"
+        aria-invalid="true"
+      />
+      <span class="text-danger" *ngIf="parentForm.controls['lastName'].hasError('required')"
+        >This field is required</span
+      >
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">Title/Position</label>
+      <input
+        class="form-control"
+        placeholder="Title/Position"
+        type="text"
+        name="title"
+        formControlName="title"
+        tabindex="0"
+        aria-invalid="true"
+      />
+    </div>
+    <div class="form-group">
+      <label class="control-label">Phone</label>
+      <input
+        class="form-control"
+        placeholder="Phone"
+        type="text"
+        name="phone"
+        formControlName="phone"
+        tabindex="0"
+        aria-invalid="true"
+        [textMask]="{ mask: phoneMask }"
+      />
+    </div>
+    <div class="form-group">
+      <label class="control-label">PIN</label>
+      <div class="mb-lg">
+        {{ randomPin }}
+        <input type="hidden" formControlName="pin" [value]="randomPin" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">Residents</label>
+      <div class="radio c-radio">
+        <label>
+          <input
+            type="radio"
+            formControlName="residentMode"
+            [checked]="!showResidentSelector()"
+            value="all"
+            (click)="setResidentMode('all')"
+          />
+          <span class="fa fa-circle"></span>
+          Show All Residents
+        </label>
+      </div>
+      <div class="radio c-radio">
+        <label>
+          <input
+            type="radio"
+            formControlName="residentMode"
+            [checked]="showResidentSelector()"
+            value="select"
+            (click)="setResidentMode('select')"
+          />
+          <span class="fa fa-circle"></span>
+          Show Selected Residents
+        </label>
+      </div>
+      <div class="select-residents-container" *ngIf="showResidentSelector()">
+        <ng-select
+          [multiple]="true"
+          [allowClear]="true"
+          [items]="residentNames"
+          [active]="selectedResidents"
+          (selected)="handleAddResident($event)"
+          (removed)="handleRemoveResident($event)"
+          placeholder="No residents selected"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+</div>

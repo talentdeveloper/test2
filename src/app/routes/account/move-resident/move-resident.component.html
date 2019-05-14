@@ -1,0 +1,68 @@
+<div class="container-fluid">
+  <app-page-title title="Move Resident"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <form
+        [formGroup]="form"
+        class="form-validate"
+        role="form"
+        name="moveDeviceForm"
+        novalidate=""
+        (submit)="handleOnSubmit($event, form.value)"
+      >
+        <div class="panel bb0">
+          <app-panel-title title="Resident: {{ residentName }}"></app-panel-title>
+          <div class="panel-body bt">
+            <div class="row">
+              <div class="col-sm-12 col-md-9">
+                <div class="form-group">
+                  <label class="control-label">Account</label>
+                  <select
+                    class="form-control"
+                    formControlName="account_id"
+                    (change)="handleAccountChange()"
+                    *ngIf="canChangeAccount()"
+                  >
+                    <option value="">Please select the account this device belongs to</option>
+                    <option *ngFor="let account of accounts" [value]="account._id">
+                      {{ account.profile.account_name }}
+                    </option>
+                  </select>
+                  <div *ngIf="!canChangeAccount()">{{ getAccountName() }}</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Community</label>
+                  <select class="form-control" formControlName="facility_id">
+                    <option value="">Please select the community this device belongs to</option>
+                    <option *ngFor="let facility of accountFacilities" [value]="facility._id">
+                      {{ facility.profile.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row bg-gray-lighter pt-lg pb-lg">
+            <div class="col-sm-12 col-md-9">
+              <button class="btn btn-labeled btn-info" type="submit" [disabled]="submitDisabled()">
+                <span class="btn-label"><i class="fa fa-save"></i></span>
+                Move Resident
+              </button>
+              <button
+                class="btn btn-labeled pull-right"
+                type="button"
+                (click)="returnToResidentList()"
+              >
+                <span class="btn-label"><i class="fa fa-close"></i></span>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

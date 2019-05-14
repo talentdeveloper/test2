@@ -1,0 +1,15 @@
+<!-- START Community Usage Chart -->
+<div class="panel panel-default inner-panel">
+  <div class="panel-body">
+    <div class="chart-heading" *ngIf="!!chartDescription">{{ chartDescription }}</div>
+    <div
+      flot
+      [dataset]="chart.dataset"
+      [options]="chart.options"
+      (plotClick)="chartClick($event)"
+      (ready)="chartReady($event)"
+      height="300"
+    ></div>
+  </div>
+</div>
+<!-- END Community Usage Chart -->

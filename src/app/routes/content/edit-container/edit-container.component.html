@@ -1,0 +1,8 @@
+<div class="edit-container" *ngIf="container && container._id">
+  <container-form
+    [errorMessage]="errorMessage"
+    [submitEnabled]="submitEnabled"
+    (onSubmit)="onSubmit($event)"
+    [container]="container">
+  </container-form>
+</div>

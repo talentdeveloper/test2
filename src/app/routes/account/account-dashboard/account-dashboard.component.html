@@ -1,0 +1,51 @@
+<app-page-title title="Account Dashboard"></app-page-title>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="account-heading">{{ dashboardData.accountName }}</div>
+    </div>
+  </div>
+
+  <div class="panel panel-default outer-panel">
+    <app-drill-down-date-selector
+      [title]="title"
+      [selectedRange]="selectedRange"
+      [products]="dashboardData.accountProducts"
+      [firstYear]="dashboardData.firstYear"
+      (rangeChanged)="rangeChanged($event)"
+    >
+    </app-drill-down-date-selector>
+    <app-drill-down-chart
+      [chartDescription]="chartDescription"
+      [selectedRange]="selectedRange"
+      [chartData]="dashboardData.drillDownChart"
+      (rangeChanged)="rangeChanged($event)"
+    >
+    </app-drill-down-chart>
+
+    <app-sortable-report
+      [reportData]="dashboardData.facilitiesReport"
+      [columns]="facilityReportColumns"
+      title="Communities"
+    >
+    </app-sortable-report>
+    <div class=" panel-body negative-mt-lg ">
+      <div class="row ">
+        <div class="col-sm-12 section-heading ">
+          Content
+        </div>
+      </div>
+      <div class="row ">
+        <div class="col-sm-6 content-panel-left ">
+          <app-content-usage-pie-chart [chartData]="dashboardData.contentPieChart">
+          </app-content-usage-pie-chart>
+        </div>
+        <div class="col-sm-6 content-panel-right ">
+          <app-content-usage-report [reportData]="dashboardData.contentAccessedReport.data">
+          </app-content-usage-report>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

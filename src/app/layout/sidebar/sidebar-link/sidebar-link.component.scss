@@ -1,0 +1,15 @@
+.sidebar-link a {
+  -webkit-animation: fadeInLeft 0.5s;
+  animation: fadeInLeft 0.5s;
+  display: block;
+  position: relative;
+  padding: 10px 0;
+  font-weight: normal;
+  background-color: transparent !important;
+  color: #515253;
+
+  &:hover {
+    text-decoration: none;
+    color: #23b7e5;
+  }
+}

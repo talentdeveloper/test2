@@ -1,0 +1,132 @@
+<div class="panel panel-default">
+  <div class="panel-body pt0 pb0">
+    <div class="row">
+      <div class="col-xs-12 bg-gray-lighter pt pb">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="input-group">
+              <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+              <input
+                type="text"
+                placeholder='Search by Device ID, Account Name, or Community Name. Use "" for exact matching.'
+                [(ngModel)]="search"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 pl0 pr0">
+        <table class="table table-striped">
+          <tr>
+            <th>
+              <a
+                (click)="setSort(columnTypes.account)"
+                [ngClass]="{ 'active-column': activeColumn === columnTypes.account }"
+              >
+                Account
+
+                <span class="order-icon" *ngIf="asc">&uarr;</span>
+                <span class="order-icon" *ngIf="!asc">&darr;</span>
+              </a>
+            </th>
+            <th>
+              <a
+                (click)="setSort(columnTypes.facility)"
+                [ngClass]="{ 'active-column': activeColumn === columnTypes.facility }"
+              >
+                Community
+
+                <span class="order-icon" *ngIf="asc">&uarr;</span>
+                <span class="order-icon" *ngIf="!asc">&darr;</span>
+              </a>
+            </th>
+            <th>
+              <a
+                (click)="setSort(columnTypes.product)"
+                [ngClass]="{ 'active-column': activeColumn === columnTypes.product }"
+              >
+                Product
+
+                <span class="order-icon" *ngIf="asc">&uarr;</span>
+                <span class="order-icon" *ngIf="!asc">&darr;</span>
+              </a>
+            </th>
+            <th>
+              <a
+                (click)="setSort(columnTypes.nickname)"
+                [ngClass]="{ 'active-column': activeColumn === columnTypes.nickname }"
+              >
+                Device ID
+
+                <span class="order-icon" *ngIf="asc">&uarr;</span>
+                <span class="order-icon" *ngIf="!asc">&darr;</span>
+              </a>
+            </th>
+            <th>
+              <a
+                (click)="setSort(columnTypes.serialNumber)"
+                [ngClass]="{ 'active-column': activeColumn === columnTypes.serialNumber }"
+              >
+                Serial Number
+
+                <span class="order-icon" *ngIf="asc">&uarr;</span>
+                <span class="order-icon" *ngIf="!asc">&darr;</span>
+              </a>
+            </th>
+            <th>Stats</th>
+          </tr>
+          <tr *ngFor="let device of filteredDevices()">
+            <td>
+              <a [routerLink]="['/account', device.account_id, 'dashboard']">
+                {{ device.account_name }}
+              </a>
+            </td>
+            <td>
+              <a
+                [routerLink]="[
+                  '/account',
+                  device.account_id,
+                  'facility',
+                  device.facility_id,
+                  'dashboard'
+                ]"
+              >
+                {{ device.facility_name }}
+              </a>
+            </td>
+            <td>{{ getProductName(device) }}</td>
+            <td>
+              <a
+                [routerLink]="[
+                  '/account',
+                  device.account_id,
+                  'facility',
+                  device.facility_id,
+                  'devices',
+                  device._id
+                ]"
+              >
+                {{ device.nickname }}
+              </a>
+            </td>
+            <td>{{ device.serial_number }}</td>
+            <td *ngIf="device.loaded">
+              Queued: {{ device.files_queued }}<br />
+              Downloading: {{ device.files_downloading }}<br />
+              Downloaded: {{ device.files_downloaded }}<br />
+              Errors: {{ device.files_errored }}
+            </td>
+            <td *ngIf="!device.loaded">
+              Loading...
+            </td>
+          </tr>
+        </table>
+
+        <p class="p-lg" *ngIf="!filteredDevices().length">
+          No devices listed.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

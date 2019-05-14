@@ -1,0 +1,77 @@
+<div class="panel-body">
+  <div class="row">
+    <div class="col-sm-8 section-heading">
+      {{ title }}
+    </div>
+    <div class="col-sm-4 section-heading text-right">
+      <button
+        *ngIf="!!listRouterLinkArray"
+        class="btn btn-primary"
+        [routerLink]="listRouterLinkArray"
+      >
+        {{ goToAllButtonTitle }}
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default inner-panel">
+        <div class="panel-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th
+                  *ngFor="let column of columns"
+                  [ngTableSorting]="config"
+                  [column]="column"
+                  (sortChanged)="changeSort(column)"
+                  style="cursor: pointer;"
+                >
+                  {{ column.title }}
+                  <i
+                    *ngIf="column.sort"
+                    class="fa"
+                    [ngClass]="{
+                      'fa-chevron-down': column.sort === 'desc',
+                      'fa-chevron-up': column.sort === 'asc'
+                    }"
+                  ></i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of displayedList()">
+                <td *ngFor="let column of columns; let i = index">
+                  <a
+                    *ngIf="getItemLinkArray(column, item)"
+                    class="btn btn-link item-link"
+                    [routerLink]="getItemLinkArray(column, item)"
+                  >
+                    {{ getValue(i, item) }}
+                  </a>
+                  <div *ngIf="!getItemLinkArray(column, item)" [ngClass]="cellStyle(column, item)">
+                    {{ getValue(i, item) }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center big" *ngIf="reportData && reportData.length > shortListSize">
+            <div
+              class="fa fa-chevron-down text-primary align-bottom"
+              aria-hidden="true"
+              *ngIf="!displayFullList"
+              (click)="toggleListSize()"
+            ></div>
+            <div
+              class="fa fa-chevron-up text-primary align-bottom"
+              aria-hidden="true"
+              *ngIf="displayFullList"
+              (click)="toggleListSize()"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

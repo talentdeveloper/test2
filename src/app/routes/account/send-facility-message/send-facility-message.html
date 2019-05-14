@@ -1,0 +1,36 @@
+<div class="container-fluid" *ngIf="message">
+  <app-page-title title="Notify All Users in Community"></app-page-title>
+
+  <div *ngIf="!message.created_date">
+    <p>
+      Send a notification to all users in your facility through an IN2L-connected device. You can
+      use this feature to send birthday announcements, reminders about upcoming events and classes,
+      or for other quick communications.
+    </p>
+
+    <message-form [message]="message" (onSubmit)="onSubmit($event)"></message-form>
+  </div>
+
+  <div class="row" *ngIf="message.created_date">
+    <div class="col-xs-12">
+      <div class="panel panel-default bb0">
+        <div class="panel-body bb bt pb0">
+          <alert type="success">
+            <i class="fa fa-check-circle-o"></i>
+            Success! Message sent.
+          </alert>
+          <p>
+            This message has been sent to everyone within the facility.
+          </p>
+
+          <p></p>
+          <p>
+            <a class="btn btn-primary btn-outline mt-sm mb" (click)="resetForm()"
+              >Send Another Mesage</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

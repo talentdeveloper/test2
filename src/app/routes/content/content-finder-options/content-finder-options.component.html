@@ -1,0 +1,112 @@
+<form [formGroup]="form" class="form-validate" role="form" name="form" novalidate=""
+  (submit)="handleOnSubmit($event, form.value)">
+  
+  <p>
+    <button
+      (click)="clearFilters($event)"
+      class="btn btn-primary"
+      type="button">
+      Clear Filters
+    </button>
+  </p>
+  
+  <div class="form-group">
+    <label class="control-label">Keywords</label>
+    <input
+      (keyup)="handleKeywordChange($event)"
+      class="form-control"
+      placeholder="Keywords"
+      type="text"
+      formControlName="keywords">
+  </div>
+  
+  
+  <div class="form-group">
+    <label class="control-label">Display Type</label>
+    <div class="option-list-container">
+      <div class="checkbox" *ngFor="let i = index; let control of form.controls.display_type.controls">
+        <label>
+          <input
+            (change)="onChange($event)"
+            type="checkbox"
+            [formControl]="control" />
+          <em class="bg-indigo-500"></em>
+          {{ displayTypeList[i].label }}
+        </label>
+      </div>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="control-label">Skill Level</label>
+    <div *ngFor="let i = index; let control of form.controls.skill_level.controls">
+      <div class="checkbox">
+        <label>
+          <input
+            (change)="onChange($event)"
+            type="checkbox"
+            [formControl]="control" />
+          <em class="bg-indigo-500"></em>
+          {{skillLevelList[i].label}}
+        </label>
+      </div>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="control-label">Accessibility</label>
+    <div *ngFor="let i = index; let control of form.controls.accessibility.controls">
+      <div class="checkbox">
+        <label>
+          <input
+            (change)="onChange($event)"
+            type="checkbox"
+            [formControl]="control" />
+          <em class="bg-indigo-500"></em>
+          {{accessibilityList[i].label}}
+        </label>
+      </div>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="control-label">Status</label>
+    <div *ngFor="let i = index; let control of form.controls.content_status.controls">
+      <div class="checkbox">
+        <label>
+          <input
+            (change)="onChange($event)"
+            type="checkbox"
+            [formControl]="control" />
+          <em class="bg-indigo-500"></em>
+          {{contentStatus[i].label}}
+        </label>
+      </div>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="control-label">Active Start Date On or After</label>
+    <input bsDatepicker placement="bottom left" [bsConfig]="{containerClass: 'theme-blue'}"
+      formControlName="active_start_date"
+      class="form-control"
+      placeholder="Active Start Date (MM/DD/YYYY)"
+      type="text"
+      (bsValueChange)="handleActiveDateStartChange($event)"
+      (keyup)="handleActiveDateStartChange($event)">
+    <span class="text-danger" *ngIf="hasDateError(form.get('active_start_date'))">Invalid date</span>
+  </div>
+  
+  <div class="form-group">
+    <label class="control-label">Active End Date On or Before</label>
+    <input bsDatepicker placement="bottom left" [bsConfig]="{containerClass: 'theme-blue'}"
+      formControlName="active_end_date"
+      class="form-control"
+      placeholder="Active End Date (MM/DD/YYYY)"
+      type="text"
+      (bsValueChange)="handleActiveDateEndChange($event)"
+      (keyup)="handleActiveDateEndChange($event)">
+    <span class="text-danger" *ngIf="hasDateError(form.get('active_end_date'))">Invalid date</span>
+  </div>
+
+</form>

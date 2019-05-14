@@ -1,0 +1,328 @@
+<div class="panel panel-default outer-panel">
+  <div class=" panel-body">
+    <div class="panel-body">
+      <div class="row mb-lg">
+        <div class="col-sm-6">
+          <div class="input-group">
+            <span class="input-group-addon"><em class="icon-magnifier"></em></span>
+            <input
+              #search
+              class="form-control"
+              type="text"
+              placeholder="Type and hit enter"
+              (keyup.enter)="updateSearch(search.value)"
+            />
+            <span class="input-group-addon" (click)="search.value = ''; updateSearch('')"
+              >Clear</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <button
+            class="btn btn-danger btn-outline pull-right ml-sm"
+            [disabled]="!selectedItems.length"
+            (click)="showDeleteFolderModal()"
+          >
+            Delete
+          </button>
+          <button
+            class="btn btn-purple btn-outline pull-right ml-sm"
+            [disabled]="!selectedItems.length"
+            (click)="showMoveFolderModal()"
+          >
+            Move
+          </button>
+          <button class="btn btn-success btn-outline pull-right ml-sm" (click)="addContent()">
+            Add Content
+          </button>
+          <button class="btn btn-primary btn-outline pull-right" (click)="showAddFolderModal()">
+            Add Folder
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="panel panel-default inner-panel">
+            <div class="panel-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th *ngFor="let column of columns" (click)="changeSort(column)">
+                      {{ column.title }}
+                      <i
+                        *ngIf="column.sort"
+                        class="fa"
+                        [ngClass]="{
+                          'fa-chevron-down': column.sort === 'desc',
+                          'fa-chevron-up': column.sort === 'asc'
+                        }"
+                      ></i>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of libraryItems">
+                    <td>
+                      <input
+                        type="checkbox"
+                        (change)="toggleSelection(item)"
+                        [checked]="isSelected(item)"
+                        *ngIf="!isSearchResults"
+                      />
+                    </td>
+                    <td>
+                      <i
+                        class="fa fa-folder library-icon"
+                        *ngIf="item.doc_type === 'library-folder'"
+                      ></i>
+                      <i
+                        class="fa fa-file-o library-icon"
+                        *ngIf="item.doc_type === 'content-item'"
+                      ></i>
+                    </td>
+                    <td *ngFor="let column of columns; let i = index">
+                      <!-- title column -->
+                      <div *ngIf="column.key === 'title'">
+                        <!-- clickable folder name -->
+                        <a
+                          *ngIf="
+                            (item._id && item.doc_type !== 'library-folder') ||
+                            (!changeDetails.renameFolder ||
+                              item.title !== changeDetails.renameFolder.oldTitle)
+                          "
+                          class="btn btn-link item-link"
+                          (click)="search.value = ''; emitItemClicked(item)"
+                        >
+                          {{ item[column.key] }}
+                        </a>
+
+                        <!-- folder name edit button -->
+                        <a
+                          class="btn btn-link folder-name-edit"
+                          *ngIf="
+                            !item._id &&
+                            (!changeDetails.renameFolder ||
+                              item.title !== changeDetails.renameFolder.oldTitle)
+                          "
+                          (click)="editFolderName(item)"
+                          ><i class="fa fa-edit"></i
+                        ></a>
+
+                        <!-- edit folder name textbox -->
+                        <input
+                          type="text"
+                          [(ngModel)]="changeDetails.renameFolder.newTitle"
+                          *ngIf="
+                            changeDetails.renameFolder &&
+                            item.title === changeDetails.renameFolder.oldTitle
+                          "
+                        />
+
+                        <!-- save folder name change checkmark button -->
+                        <a
+                          class="btn btn-link folder-name-edit"
+                          *ngIf="
+                            changeDetails.renameFolder &&
+                            item.title === changeDetails.renameFolder.oldTitle
+                          "
+                          (click)="saveFolderName(item)"
+                          ><i class="fa fa-check text-success"></i
+                        ></a>
+
+                        <!-- cancel folder name change x button -->
+                        <a
+                          class="btn btn-link folder-name-edit"
+                          *ngIf="
+                            changeDetails.renameFolder &&
+                            item.title === changeDetails.renameFolder.oldTitle
+                          "
+                          (click)="cancelFolderNameChange()"
+                          ><i class="fa fa-times text-danger"></i
+                        ></a>
+                      </div>
+
+                      <!-- Search result paths -->
+                      <div class="text-muted" *ngIf="column.key === 'title' && isSearchResults">
+                        {{ item.library_path }}
+                      </div>
+
+                      <div *ngIf="column.key !== 'title'">
+                        <div *ngIf="column.type !== 'date'">
+                          {{
+                            column.key === 'total_content_items' && !!item._id
+                              ? ''
+                              : item[column.key]
+                          }}
+                        </div>
+                        <div *ngIf="column.type === 'date'">
+                          {{ item[column.key] | date: 'shortDate' }}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Folder Modal -->
+<div
+  class="modal fade"
+  bsModal
+  #addFolderModal="bs-modal"
+  [config]="{ backdrop: false }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="addContentLibraryFolderModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Add a new content library folder</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="cancelModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <input
+              type="text"
+              placeholder="New folder name"
+              class="form-control"
+              [(ngModel)]="newFolderName"
+            />
+          </div>
+        </div>
+        <div class="row mt-lg">
+          <div class="col-sm-12">
+            <button type="button" class="pull-left btn" aria-label="Cancel" (click)="cancelModal()">
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="pull-right btn btn-primary"
+              aria-label="Save"
+              [disabled]="!newFolderNameIsValid()"
+              (click)="submitNewFolder()"
+            >
+              Add Folder
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Move Folder Modal -->
+<div
+  class="modal fade"
+  bsModal
+  #moveModal="bs-modal"
+  [config]="{ backdrop: false }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="moveContentLibraryFolderModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Move selected folders and content to a new parent folder
+        </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="cancelModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label class="control-label">New Parent Folder</label>
+              <select class="form-control" [(ngModel)]="moveToPath">
+                <option *ngFor="let path of allLibraryPaths" [value]="path">
+                  {{ path.replace('/', ' / ') }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-lg">
+          <div class="col-sm-12">
+            <button type="button" class="pull-left btn" aria-label="Cancel" (click)="cancelModal()">
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="pull-right btn btn-primary"
+              aria-label="Save"
+              [disabled]="!moveToPath"
+              (click)="submitMove()"
+            >
+              Move Items
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Folder Modal -->
+<div
+  class="modal fade"
+  bsModal
+  #deleteModal="bs-modal"
+  [config]="{ backdrop: false }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="deleteContentLibraryFolderModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Delete selected empty folders<br />and selected content items
+        </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="cancelModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" *ngFor="let item of selectedItems">
+          <div class="col-sm-1">&nbsp;</div>
+          <div class="col-sm-1">
+            <i class="fa fa-folder library-icon" *ngIf="!item._id"></i>
+            <i class="fa fa-file-o library-icon" *ngIf="!!item._id"></i>
+          </div>
+          <div class="col-sm-8">{{ item.title }}</div>
+        </div>
+        <div class="row mt-lg">
+          <div class="col-sm-12">
+            <button type="button" class="pull-left btn" aria-label="Cancel" (click)="cancelModal()">
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="pull-right btn btn-primary"
+              aria-label="Save"
+              (click)="submitDelete()"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

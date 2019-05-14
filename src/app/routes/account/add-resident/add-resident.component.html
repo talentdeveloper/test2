@@ -1,0 +1,14 @@
+<div class="container-fluid">
+  <app-page-title title="Add Resident"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-resident-form
+        *ngIf="accountId && facility"
+        [accountId]="accountId"
+        [facility]="facility"
+      >
+      </app-resident-form>
+    </div>
+  </div>
+</div>

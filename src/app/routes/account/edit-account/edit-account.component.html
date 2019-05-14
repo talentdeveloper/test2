@@ -1,0 +1,13 @@
+<div class="container-fluid" *ngIf="account">
+
+  <app-page-title title="Edit {{ account.profile.account_name }}"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12">
+
+      <app-account-form [editMode]="true" [account]="account"></app-account-form>
+
+    </div>
+  </div>
+
+</div>

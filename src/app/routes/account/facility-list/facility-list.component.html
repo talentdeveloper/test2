@@ -1,0 +1,87 @@
+<div class="container-fluid">
+  <app-page-title title="Communities"></app-page-title>
+
+  <div class="row" *ngIf="account">
+    <div class="col-xs-12 mb-lg text-right">
+      <a
+        class="btn btn-primary btn-outline"
+        [routerLink]="['/account', account._id, 'facility', 'add']"
+        >Add Community</a
+      >
+    </div>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body pt0 pb0">
+          <div class="row" *ngIf="!dataLoaded">
+            <div class="col-xs-12 p-xl">
+              Loading ...
+            </div>
+          </div>
+
+          <div class="row" *ngIf="dataLoaded && facilities.length > 0">
+            <div class="col-xs-12 bg-gray-lighter pt pb">
+              <div class="row">
+                <div class="col-xs-12 col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+                    <input
+                      type="text"
+                      placeholder="Search by facility name or region"
+                      [(ngModel)]="facilityFilter"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 pl0 pr0">
+              <table class="table table-striped">
+                <tr>
+                  <th class="id-cell">ID</th>
+                  <th>Community</th>
+                  <th class="region-cell">Region</th>
+                  <th class="action-cell text-center">Action</th>
+                </tr>
+                <tr
+                  *ngFor="
+                    let facility of (getAccountFacilities()
+                      | filterBy: ['profile.name', 'profile.region']:facilityFilter)
+                  "
+                >
+                  <td>
+                    <small class="text-muted">{{ facility._id }}</small>
+                  </td>
+                  <td>
+                    <a [routerLink]="['/account', account._id, 'facility', facility._id]">
+                      <strong>{{ facility.profile.name }}</strong>
+                    </a>
+                  </td>
+                  <td>{{ facility.profile.region }}</td>
+                  <td class="text-center">
+                    <a
+                      class="btn btn-primary btn-outline btn-sm"
+                      [routerLink]="['/account', account._id, 'facility', facility._id]"
+                      >View</a
+                    >
+                    <a
+                      class="btn btn-warning btn-outline btn-sm ml"
+                      [routerLink]="['/account', account._id, 'facility', facility._id, 'edit']"
+                      >Edit</a
+                    >
+                  </td>
+                </tr>
+              </table>
+
+              <p class="p-lg" *ngIf="!getAccountFacilities().length">
+                No Communities have been linked to this account.
+                <a class="btn" [routerLink]="['/account', account._id, 'facility', 'add']"
+                  >Add Community</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

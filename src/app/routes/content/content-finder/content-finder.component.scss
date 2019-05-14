@@ -1,0 +1,52 @@
+.content-finder {
+  .status-icon {
+    width: 10px;
+    height: 24px;
+    margin-right: 5px;
+  }
+
+  .legend-header {
+    margin-top: 0;
+  }
+
+  .legend {
+    margin-bottom: 10px;
+    padding: 15px;
+    border: solid 1px #999;
+    background: #eee;
+  }
+
+  .legend-item {
+    line-height: 30px;
+  }
+
+  .node-item {
+    padding: 5px 0;
+  }
+
+  .node-expander {
+    margin: 4px 4px 4px 0;
+    display: inline-block;
+    width: 20px;
+  }
+
+  .node-option {
+    font-weight: bold;
+  }
+
+  .content-tree-container {
+    max-height: 674px;
+    overflow: auto;
+  }
+
+  .active {
+    font-weight: bold;
+
+    .node-title {
+      text-decoration: underline;
+    }
+  }
+  .simulate-date-field {
+    width: 130px;
+  }
+}

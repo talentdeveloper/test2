@@ -1,0 +1,12 @@
+<div class="container-fluid">
+  <app-page-title title="Your Account Profile"></app-page-title>
+
+  <app-user-view
+    [user]="user"
+    showEditButton="true"
+    (onEditUser)="onEditUser($event)"
+    showChangePasswordButton="true"
+    (onChangePassword)="onChangePassword($event)"
+  >
+  </app-user-view>
+</div>

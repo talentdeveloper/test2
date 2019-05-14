@@ -1,0 +1,200 @@
+<div class="container-fluid" *ngIf="account">
+  <app-page-title title="View Account: {{ account.profile.account_name }}"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <a class="btn btn-primary btn-outline" [routerLink]="['/account', account._id, 'edit']"
+        >Edit</a
+      >
+      <a
+        class="btn btn-primary btn-outline"
+        [routerLink]="['/account', account._id, 'facility', 'list']"
+        >Communities</a
+      >
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="lead bb">Account Profile</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Account Name:</div>
+                  <div class="col-sm-8">{{ account.profile.account_name }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Corporate ID:</div>
+                  <div class="col-sm-8">{{ account.profile.corporate_id }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">CRM ID:</div>
+                  <div class="col-sm-8">{{ account.profile.crm_id }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Owner:</div>
+                  <div class="col-sm-8">{{ account.profile.owner }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Manager:</div>
+                  <div class="col-sm-8">{{ account.profile.manager }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Notes:</div>
+                  <div class="col-sm-8">{{ account.profile.notes }}</div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <p class="lead bb">Account Contact</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Email:</div>
+                  <div class="col-sm-8">{{ account.profile.contact.email }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Phone:</div>
+                  <div class="col-sm-8">{{ account.profile.contact.phone }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Address:</div>
+                  <div class="col-sm-8">
+                    {{ account.profile.contact.address.address1 }},
+                    <div *ngIf="account.profile.contact.address.address2">
+                      {{ account.profile.contact.address.address2 }},
+                    </div>
+                    <div *ngIf="account.profile.contact.address.country === 'United States'">
+                      {{ account.profile.contact.address.city }},
+                      {{ account.profile.contact.address.state }}
+                      {{ account.profile.contact.address.zip_code }}
+                    </div>
+                    <div *ngIf="account.profile.contact.address.country === 'Canada'">
+                      {{ account.profile.contact.address.city }},
+                      {{ account.profile.contact.address.province }}
+                      {{ account.profile.contact.address.postal_code }}
+                    </div>
+                    <div>
+                      {{ account.profile.contact.address.country }}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="lead bb">Account Billing</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Billing ID:</div>
+                  <div class="col-sm-8">{{ account.billing.id }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Due Date:</div>
+                  <div class="col-sm-8">{{ account.billing.due_date }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Last Bill Date:</div>
+                  <div class="col-sm-8">{{ account.billing.last_bill_date }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Next Bill Date:</div>
+                  <div class="col-sm-8">{{ account.billing.next_bill_date }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Frequency:</div>
+                  <div class="col-sm-8">{{ account.billing.frequency }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Non Profit:</div>
+                  <div class="col-sm-8">
+                    {{ account.billing.non_profit_status === 'true' ? 'Yes' : 'No' }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Status:</div>
+                  <div class="col-sm-8">
+                    <div
+                      class="label label-success"
+                      *ngIf="account.billing.status.toLowerCase() === 'active'"
+                    >
+                      Active
+                    </div>
+                    <div
+                      class="label label-warning"
+                      *ngIf="account.billing.status.toLowerCase() === 'inactive'"
+                    >
+                      Inactive
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Subscription Start Date:</div>
+                  <div class="col-sm-8">{{ account.billing.subscription_start_date }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Tax Exempt:</div>
+                  <div class="col-sm-8">
+                    {{ account.billing.tax_exempt_status === 'true' ? 'Yes' : 'No' }}
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <p class="lead bb">Account Billing Contact</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Name:</div>
+                  <div class="col-sm-8">
+                    {{ account.billing.contact.first_name }} {{ account.billing.contact.last_name }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Email:</div>
+                  <div class="col-sm-8">{{ account.billing.contact.email }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Phone:</div>
+                  <div class="col-sm-8">{{ account.billing.contact.phone }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Address:</div>
+                  <div class="col-sm-8">
+                    {{ account.billing.contact.address.address1 }},
+                    <div *ngIf="account.billing.contact.address.address2">
+                      {{ account.billing.contact.address.address2 }},
+                    </div>
+                    <div *ngIf="account.billing.contact.address.country === 'United States'">
+                      {{ account.billing.contact.address.city }},
+                      {{ account.billing.contact.address.state }}
+                      {{ account.billing.contact.address.zip_code }}
+                    </div>
+                    <div *ngIf="account.billing.contact.address.country === 'Canada'">
+                      {{ account.billing.contact.address.city }},
+                      {{ account.billing.contact.address.province }}
+                      {{ account.billing.contact.address.postal_code }}
+                    </div>
+                    <div>
+                      {{ account.billing.contact.address.country }}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer p-sm text-center">
+          <small class="text-small text-muted">Account ID: {{ account._id }}</small>
+        </div>
+      </div>
+      <!-- end panel -->
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <app-document-changed-by [document]="account"></app-document-changed-by>
+    </div>
+  </div>
+</div>

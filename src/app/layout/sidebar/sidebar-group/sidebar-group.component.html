@@ -1,0 +1,14 @@
+<div class="sidebar-group" [class.sidebar-main]="main">
+  <div class="heading" *ngIf="main && showHeader">{{ name }}</div>
+
+  <a
+    title="{{ name }}"
+    *ngIf="!main && showHeader"
+    class="link-heading"
+    (click)="toggleVisibility($event)"
+  >
+    {{ name }}
+  </a>
+
+  <div class="children" *ngIf="(!main && open) || main"><ng-content></ng-content></div>
+</div>

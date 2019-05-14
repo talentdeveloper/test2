@@ -1,0 +1,25 @@
+<div class="container-fluid">
+  <app-page-title title="iN2L Focus Users"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <a class="btn btn-primary btn-outline" routerLink="/invite/send">Create User</a>
+    </div>
+    <div class="col-xs-12">
+      <app-user-list
+        [users]="users"
+        [accounts]="accounts"
+        [facilities]="facilities"
+        [showAccountColumn]="true"
+        [showEmailColumn]="true"
+        [showAccountStatusColumn]="true"
+        [showEditButton]="true"
+        (onEditUser)="onEditUser($event)"
+        [showFacilityColumn]="true"
+        [showViewButton]="true"
+        (onViewUser)="onViewUser($event)"
+      >
+      </app-user-list>
+    </div>
+  </div>
+</div>

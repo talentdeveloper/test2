@@ -1,0 +1,14 @@
+.loading-indicator-container {
+  $height: 50px;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+  height: $height;
+  background: #131e26;
+  color: #fff;
+  text-align: center;
+  line-height: $height;
+}

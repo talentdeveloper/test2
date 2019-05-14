@@ -1,0 +1,176 @@
+<div class="container-fluid" *ngIf="device">
+  <app-page-title
+    title="Device {{ device.nickname ? ' - ' + device.nickname : '' }} - {{ device.serial_number }}"
+    *ngIf="device.nickname"
+  ></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <a
+        class="btn btn-warning btn-outline btn-sm ml-sm"
+        [routerLink]="[
+          '/account',
+          accountId,
+          'facility',
+          facilityId,
+          'devices',
+          device._id,
+          'edit'
+        ]"
+        *ngIf="permissions.canEditDevice"
+      >
+        Edit
+      </a>
+      <a
+        class="btn btn-purple btn-outline btn-sm ml-sm"
+        [routerLink]="[
+          '/account',
+          accountId,
+          'facility',
+          facilityId,
+          'devices',
+          device._id,
+          'move'
+        ]"
+        *ngIf="permissions.canMoveDevice"
+      >
+        Move
+      </a>
+      <a
+        class="btn btn-danger btn-outline btn-sm ml-sm"
+        (click)="deleteDevicePrompt()"
+        *ngIf="permissions.canDeleteDevice"
+      >
+        Delete
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="lead bb">Device</p>
+              <form class="form-horizontal mb-xl p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Serial Number:</div>
+                  <div class="col-sm-8">{{ device.serial_number || 'WAITING FOR ASSIGNMENT' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Device ID:</div>
+                  <div class="col-sm-8">{{ device.nickname }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Nickname:</div>
+                  <div class="col-sm-8">{{ device.external_nickname }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Product:</div>
+                  <div class="col-sm-8">{{ device.product || 'FOCUS' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Device Status:</div>
+                  <div class="col-sm-8">
+                    <div class="label label-success" *ngIf="device.isActive()">Active</div>
+                    <div class="label label-warning" *ngIf="!device.isActive()">Inactive</div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <p class="lead bb">Content</p>
+              <form class="form-horizontal mb-xl p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Content Mode:</div>
+                  <div class="col-sm-8">{{ device.getContentModeName() }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Skill Level:</div>
+                  <div class="col-sm-8">{{ device.getSkillLevelName() }}</div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="lead bb">Assignments</p>
+              <form class="form-horizontal mb-xl p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Community:</div>
+                  <div class="col-sm-8">
+                    {{ facility && facility.profile ? facility.profile.name : '' }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Resident Mode:</div>
+                  <div class="col-sm-8">{{ device.getResidentModeName() }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Resident Users:</div>
+                  <div class="col-sm-8">{{ residentConfiguration }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Residents:</div>
+                  <div class="col-sm-8">
+                    <div *ngFor="let resident of residents">
+                      {{ resident.first_name }} {{ resident.last_name }}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <p class="lead bb">Information</p>
+              <form class="form-horizontal mb-xl p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Last Sync:</div>
+                  <div class="col-sm-8">{{ getStatus('last_sync') | date: 'medium' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Last Online:</div>
+                  <div class="col-sm-8">{{ getStatus('last_online') | date: 'medium' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Last Usage:</div>
+                  <div class="col-sm-8">{{ getStatus('last_used') | date: 'mediumDate' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Terms of Use:</div>
+                  <div *ngIf="termsOfUseSignedDate" class="col-sm-8">
+                    Agreed to terms on: {{ termsOfUseSignedDate }}
+                  </div>
+                  <div *ngIf="!termsOfUseSignedDate" class="col-sm-8">
+                    Waiting for terms to be signed
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer p-sm text-center">
+          <small class="text-small text-muted">Device ID: {{ device._id }}</small>
+        </div>
+      </div>
+      <!-- end panel -->
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <app-document-changed-by [document]="device"></app-document-changed-by>
+    </div>
+  </div>
+</div>
+
+<app-delete-device></app-delete-device>

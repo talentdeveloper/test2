@@ -1,0 +1,172 @@
+<div class="view-content" *ngIf="content && content._id">
+  <app-panel-title [title]="'Content: ' + content.title" [subTitle]="panelSubtitle"></app-panel-title>
+  
+  <div class="row">
+    <div class="col-xs-12">
+      
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-12 mb-lg text-right">
+              <button class="btn btn-primary btn-outline" [routerLink]="['/content', 'catalog', {outlets: {'item': ['content', content._id, 'edit']}}]" [disabled]="changeDisabled">Edit</button>
+              <button class="btn btn-danger btn-outline" (click)="openDeletePrompt(content._id, content.title)"
+              [disabled]="changeDisabled">Delete</button>
+            </div>
+          </div>
+          
+          <form class="form-horizontal p-20">
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Title:</div>
+              <div class="col-sm-8">{{ content.title }}</div>
+            </div>
+            
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Tile Image:</div>
+              <div class="col-sm-8"><img [appAttachmentSrc]="content.getTileImage()" /></div>
+            </div>
+            
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Content Title Override:</div>
+              <div class="col-sm-8">{{ content.parent_title_override }}</div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Products:</div>
+              <div class="col-sm-8">{{ productList() }}</div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Content Type:</div>
+              <div class="col-sm-8">{{ content.getContentTypeLabel() }}</div>
+            </div>
+  
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Display Type:</div>
+              <div class="col-sm-8">{{ content.getDisplayTypeLabel() }}</div>
+            </div>
+            
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Search Keywords:</div>
+              <div class="col-sm-8">{{ content.keywords.join(', ') }}</div>
+            </div>
+  
+            <div class="form-group" *ngIf="content.content_type === 'website'">
+              <div class="col-sm-4 text-bold">Content URL:</div>
+              <div class="col-sm-8">{{ content.content_url }}</div>
+            </div>
+  
+            <div class="form-group" *ngIf="content.content_type !== 'website'">
+              <div class="col-sm-4 text-bold">AWS S3 Key:</div>
+              <div class="col-sm-8">{{ content.s3_key }}</div>
+            </div>
+            
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Skill Level:</div>
+              <div class="col-sm-8">{{ content.getSkillLevelLabels() }}</div>
+            </div>
+          </form>
+          
+          <div class="row mt-xl">
+            <div class="col-lg-6">
+              <p class="lead bb">Settings</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Usage Setting:</div>
+                  <div class="col-sm-8">{{ content.getUseTagLabels() }}</div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Accessibility:</div>
+                  <div class="col-sm-8">{{ content.getAccessibilityLabels() }}</div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Subscription Package:</div>
+                  <div class="col-sm-8">{{ content.subscription_package }}</div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Source:</div>
+                  <div class="col-sm-8">{{ content.source }}</div>
+                </div>
+              
+              </form>
+            </div>
+            <div class="col-lg-6">
+              <p class="lead bb">&nbsp;</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">License Expiration Date:</div>
+                  <div class="col-sm-8">{{ content.license_expiration_date }}</div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Status:</div>
+                  <div class="col-sm-8">
+                    <app-content-status [contentItem]="content"></app-content-status>
+                    {{ getStatus() }}
+                  </div>
+                </div>
+  
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">New Content Date</div>
+                  <div class="col-sm-8">{{ content.new_content_date | date: 'medium' }}</div>
+                </div>
+  
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Active Date Ranges:</div>
+                  <div class="col-sm-8">
+                    <div *ngFor="let range of content.getDisplayActiveDatesUtc()">
+                      {{ range.start }} - {{ range.end }}
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+          
+          <form class="form-horizontal p-20">
+            <div class="form-group">
+              <div class="col-sm-4 text-bold">Notes:</div>
+              <div class="col-sm-8">{{ content.notes }}</div>
+            </div>
+          </form>
+        
+          <div class="row mt-xl" *ngIf="content.isHappyNeuron()">
+            <div class="col-md-6">
+              <p class="lead bb">Happy Neuron Settings</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Game ID:</div>
+                  <div class="col-sm-8">
+                    {{ content.getHappyNeuronGameId() }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Language:</div>
+                  <div class="col-sm-8">
+                    {{ content.getHappyNeuronLangName() }}
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+            
+        </div>
+        <div class="panel-footer p-sm text-center">
+          <small class="text-small text-muted">Content ID: {{ content._id }}</small>
+        </div>
+      </div>
+      <!-- end panel -->
+    
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      
+      <app-document-changed-by [document]="content"></app-document-changed-by>
+    
+    </div>
+  </div>
+</div>

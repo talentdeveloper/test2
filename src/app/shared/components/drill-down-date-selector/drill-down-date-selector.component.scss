@@ -1,0 +1,70 @@
+.range-selector-row {
+  margin: 0 0;
+  padding-left: 0;
+}
+
+.panel-heading {
+  font-size: 22px;
+  font-weight: lighter;
+  margin-bottom: 0px;
+  margin-left: 12px;
+  margin-top: 5px;
+}
+
+.date-range-arrow-left,
+.date-range-arrow-right {
+  background-color: #689fe1;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+
+.date-range-arrow-left-hidden {
+  background-color: none;
+  visibility: hidden;
+}
+
+.date-range-arrow-left > i {
+  color: white;
+  font-weight: bold;
+  margin-left: -4px;
+  margin-top: 10px;
+}
+
+.date-range-arrow-right > i {
+  color: white;
+  font-weight: bold;
+  margin-right: -4px;
+  margin-top: 10px;
+}
+
+.date-range-value {
+  margin-top: 3px;
+}
+
+.date-range-month {
+  padding-bottom: 5px;
+}
+
+.view-options li {
+  border-bottom: 1px solid #cfdbe2;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  text-align: center;
+}
+
+.view-options li:hover {
+  background-color: #689fe1;
+}
+
+.view-options li > a:hover {
+  background-color: #689fe1;
+}
+
+.view-options li:last-child {
+  border-bottom: none;
+}
+
+.range-button {
+  margin-right: 10px;
+}

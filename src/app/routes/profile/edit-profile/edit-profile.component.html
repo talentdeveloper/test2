@@ -1,0 +1,11 @@
+<div class="container-fluid" *ngIf="user">
+  <app-page-title title="Edit Your Account Profile"></app-page-title>
+
+  <app-user-profile-form
+    [user]="user"
+    (onSubmit)="onSubmit($event)"
+    (onCancel)="onCancel()"
+  ></app-user-profile-form>
+
+  <app-document-changed-by [document]="user || {}"></app-document-changed-by>
+</div>

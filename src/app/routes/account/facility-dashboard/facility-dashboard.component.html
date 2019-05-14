@@ -1,0 +1,58 @@
+<app-page-title title="Community Dashboard"></app-page-title>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="facility-heading">
+        {{ dashboardData.accountName }}: {{ dashboardData.facilityName }}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default outer-panel">
+    <app-drill-down-date-selector
+      [title]="title"
+      [selectedRange]="selectedRange"
+      [products]="dashboardData.facilityProducts"
+      [firstYear]="dashboardData.firstYear"
+      (rangeChanged)="rangeChanged($event)"
+    >
+    </app-drill-down-date-selector>
+    <app-drill-down-chart
+      [chartDescription]="chartDescription"
+      [selectedRange]="selectedRange"
+      [chartData]="dashboardData.drillDownChart"
+      (rangeChanged)="rangeChanged($event)"
+    >
+    </app-drill-down-chart>
+
+    <app-sortable-report
+      [reportData]="dashboardData.residentsReport"
+      [columns]="residentsReportColumns"
+      [listRouterLinkArray]="['/account', accountId, 'facility', facilityId, 'resident']"
+      title="Residents"
+      [goToAllButtonTitle]="'View All Residents (' + (dashboardData.residentCount || 0) + ')'"
+    >
+    </app-sortable-report>
+
+    <app-sortable-report
+      [reportData]="dashboardData.devicesReport"
+      [columns]="devicesReportColumns"
+      [listRouterLinkArray]="['/account', accountId, 'facility', facilityId, 'devices']"
+      title="Devices"
+      [goToAllButtonTitle]="'View All Devices (' + (dashboardData.nonApolloDeviceCount || 0) + ')'"
+    >
+    </app-sortable-report>
+
+    <div class="row">
+      <div class="col-sm-6 content-panel-left">
+        <app-content-usage-pie-chart [chartData]="dashboardData.contentPieChart">
+        </app-content-usage-pie-chart>
+      </div>
+      <div class="col-sm-6 content-panel-right">
+        <app-content-usage-report [reportData]="dashboardData.contentAccessedReport.data">
+        </app-content-usage-report>
+      </div>
+    </div>
+  </div>
+</div>

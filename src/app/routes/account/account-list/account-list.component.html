@@ -1,0 +1,82 @@
+<div class="container-fluid">
+  <app-page-title title="Accounts"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <a class="btn btn-primary btn-outline" routerLink="/account/add">Add Account</a>
+    </div>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body pt0 pb0">
+          <div class="row" *ngIf="!dataLoaded">
+            <div class="col-xs-12 p-xl">
+              Loading ...
+            </div>
+          </div>
+
+          <div class="row" *ngIf="dataLoaded">
+            <div class="col-xs-12 bg-gray-lighter pt pb">
+              <div class="row">
+                <div class="col-xs-12 col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+                    <input
+                      type="text"
+                      placeholder="Search by account name or id"
+                      [(ngModel)]="search"
+                      (ngModelChange)="filterAccounts()"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 pl0 pr0">
+              <table class="table table-striped">
+                <tr>
+                  <th class="id-cell">ID</th>
+                  <th>Account Name</th>
+                  <th class="action-cell text-center">Action</th>
+                </tr>
+                <tr *ngFor="let account of filteredAccounts">
+                  <td>
+                    <small class="text-muted">{{ account._id }}</small>
+                  </td>
+                  <td>
+                    <a [routerLink]="['/account', account._id]"
+                      ><strong>{{ account.profile ? account.profile.account_name : '' }}</strong></a
+                    >
+                  </td>
+                  <td class="text-center">
+                    <a
+                      class="btn btn-primary btn-outline btn-sm"
+                      [routerLink]="['/account', account._id]"
+                      >View</a
+                    >
+                    <a
+                      class="btn btn-warning btn-outline btn-sm ml"
+                      [routerLink]="['/account', account._id, 'edit']"
+                      >Edit</a
+                    >
+                  </td>
+                </tr>
+              </table>
+
+              <p class="p-lg" *ngIf="!filteredAccounts.length">
+                No accounts available.
+                <a
+                  class="btn"
+                  href="#"
+                  (click)="search = ''; filterAccounts()"
+                  *ngIf="search.length"
+                  >Clear search</a
+                >
+                <a class="btn" routerLink="/account/add">Add Account</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="created-modified-by" *ngIf="document">
+  <div *ngIf="document.created_by && document.created_date">
+    Created by <em>{{ document.created_by }}</em> on <em>{{ document.created_date | date: 'medium' }}</em>.
+  </div>
+  <div *ngIf="!document.created_by && document.created_date">
+    Created on <em>{{ document.created_date | date: 'medium' }}</em>.
+  </div>
+  <div *ngIf="document.modified_by && document.modified_date">
+    Last modified by <em>{{ document.modified_by }}</em> on <em>{{ document.modified_date | date: 'medium'}}</em>.
+  </div>
+  <div *ngIf="!document.modified_by && document.modified_date">
+    Last modified on <em>{{ document.modified_date | date: 'medium'}}</em>.
+  </div>
+</div>

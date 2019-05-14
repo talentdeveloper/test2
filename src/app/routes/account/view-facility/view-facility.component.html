@@ -1,0 +1,258 @@
+<div class="container-fluid" *ngIf="account && facility">
+  <app-page-title title="View Community Profile: {{ facility.profile.name }}"></app-page-title>
+
+  <div class="row" *ngIf="currentUserCanEdit">
+    <div class="col-xs-12 mb-lg text-right">
+      <a
+        class="btn btn-primary btn-outline"
+        [routerLink]="['/account', account._id, 'facility', facility._id, 'edit']"
+        >Edit</a
+      >
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="lead bb">Community Profile</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Community Name:</div>
+                  <div class="col-sm-8">{{ facility.profile ? facility.profile.name : '' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Parent Account:</div>
+                  <div class="col-sm-8">
+                    {{ account.profile ? account.profile.account_name : '' }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Community Status:</div>
+                  <div class="col-sm-8">
+                    <div class="label label-success">Active</div>
+                    <!-- div class="label label-warning">Inactive</div -->
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Community Types:</div>
+                  <div class="col-sm-8">
+                    <div *ngFor="let facilityType of (facility.profile.facility_types | uniq)">
+                      {{ facilityType }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Eden Community:</div>
+                  <div class="col-sm-8">
+                    <span *ngIf="facility.profile && facility.profile.eden_community_status"
+                      >Yes</span
+                    >
+                    <span *ngIf="!facility.profile || !facility.profile.eden_community_status"
+                      >No</span
+                    >
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Region:</div>
+                  <div class="col-sm-8">{{ facility.profile ? facility.profile.region : '' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Number of Beds:</div>
+                  <div class="col-sm-8">
+                    {{ facility.profile ? facility.profile.number_of_beds : '' }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Training Type:</div>
+                  <div class="col-sm-8">
+                    {{ facility.profile ? facility.profile.training_type : '' }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Staff Unlock:</div>
+                  <div class="col-sm-8">
+                    {{
+                      facility.profile && facility.profile.require_staff_login
+                        ? 'Required'
+                        : 'Not Required'
+                    }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Notes:</div>
+                  <div class="col-sm-8">{{ facility.profile ? facility.profile.notes : '' }}</div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <p class="lead bb">Community Contact Information</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Community Phone:</div>
+                  <div class="col-sm-8">{{ facility.profile ? facility.profile.phone : '' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Community Address:</div>
+                  <div class="col-sm-8">
+                    {{ facility.profile ? facility.profile.address1 : '' }}
+                    <div *ngIf="facility.profile && facility.profile.address2">
+                      {{ facility.profile.address2 }}
+                    </div>
+                    <div>
+                      {{ facility.profile ? facility.profile.city : '' }},
+                      {{ facility.profile ? facility.profile.state_province : '' }}
+                      {{ facility.profile ? facility.profile.zip_postal_code : '' }}
+                    </div>
+                    <div>
+                      {{ facility.profile ? facility.profile.country : '' }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Technical Contact:</div>
+                  <div class="col-sm-8">
+                    <div>{{ facility.profile ? facility.profile.technical_contact : '' }}</div>
+                    <div>
+                      {{ facility.profile ? facility.profile.technical_contact_email : '' }}
+                    </div>
+                    <div>
+                      {{ facility.profile ? facility.profile.technical_contact_phone : '' }}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row mt-lg">
+            <div class="col-md-6">
+              <p class="lead bb">Community Billing</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Community Billing ID:</div>
+                  <div class="col-sm-8">{{ facility.billing ? facility.billing.id : '' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Billing Status:</div>
+                  <div class="col-sm-8">{{ facility.billing ? facility.billing.status : '' }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Tax Exempt:</div>
+                  <div class="col-sm-8">
+                    <span *ngIf="facility.billing && facility.billing.tax_exempt_status">Yes</span>
+                    <span *ngIf="!facility.billing || !facility.billing.tax_exempt_status">No</span>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <p class="lead bb">Community Billing Contact</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Name:</div>
+                  <div class="col-sm-8">
+                    {{
+                      facility.billing && facility.billing.contact
+                        ? facility.billing.contact.first_name
+                        : ''
+                    }}
+                    {{
+                      facility.billing && facility.billing.contact
+                        ? facility.billing.contact.last_name
+                        : ''
+                    }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Email:</div>
+                  <div class="col-sm-8">
+                    {{
+                      facility.billing && facility.billing.contact
+                        ? facility.billing.contact.email
+                        : ''
+                    }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Phone:</div>
+                  <div class="col-sm-8">
+                    {{
+                      facility.billing && facility.billing.contact
+                        ? facility.billing.contact.phone
+                        : ''
+                    }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4 text-bold">Address:</div>
+                  <div class="col-sm-8">
+                    {{
+                      facility.billing && facility.billing.contact
+                        ? facility.billing.contact.address1
+                        : ''
+                    }}
+                    <div
+                      *ngIf="
+                        facility.billing &&
+                        facility.billing.contact &&
+                        facility.billing.contact.address2
+                      "
+                    >
+                      {{ facility.billing.contact.address2 }}
+                    </div>
+                    <div>
+                      {{
+                        facility.billing && facility.billing.contact
+                          ? facility.billing.contact.city
+                          : ''
+                      }},
+                      {{
+                        facility.billing && facility.billing.contact
+                          ? facility.billing.contact.state_province
+                          : ''
+                      }}
+                      {{
+                        facility.billing && facility.billing.contact
+                          ? facility.billing.contact.zip_postal_code
+                          : ''
+                      }}
+                    </div>
+                    <div>
+                      {{
+                        facility.billing && facility.billing.contact
+                          ? facility.billing.contact.country
+                          : ''
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer p-sm text-center">
+          <small class="text-small text-muted">Community ID: {{ facility._id }}</small>
+        </div>
+      </div>
+      <!-- end panel -->
+    </div>
+  </div>
+</div>
+<app-document-changed-by [document]="facility || {}"></app-document-changed-by>

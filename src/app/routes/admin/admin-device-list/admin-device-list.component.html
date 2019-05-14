@@ -1,0 +1,171 @@
+<div class="container-fluid">
+  <app-page-title title="Admin Device List By Serial Number"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <div class="btn-group">
+        <button class="btn btn-primary" type="button" routerLink="/admin/device/list">
+          By Serial Number
+        </button>
+        <button
+          class="btn btn-primary btn-outline"
+          type="button"
+          routerLink="/admin/account/device/list"
+        >
+          By Account
+        </button>
+        <button
+          class="btn btn-primary btn-outline"
+          type="button"
+          routerLink="/admin/resident/device/list"
+        >
+          By Resident
+        </button>
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body pt0 pb0">
+          <div class="row" *ngIf="!dataLoaded">
+            <div class="col-xs-12 p-xl">Loading ...</div>
+          </div>
+
+          <div class="row" *ngIf="dataLoaded">
+            <div class="col-xs-12 bg-gray-lighter pt pb">
+              <div class="row">
+                <div class="col-xs-6">
+                  <div class="input-group">
+                    <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+                    <input
+                      type="text"
+                      placeholder="Search serial number"
+                      [(ngModel)]="search"
+                      (ngModelChange)="filterSerialNumbers()"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <div class="col-xs-6">
+                  <div class="checkbox c-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        [(ngModel)]="errorFilterActive"
+                        (ngModelChange)="filterSerialNumbers()"
+                      />
+                      <span class="fa fa-check"></span> Has errors?
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 pl0 pr0">
+              <table class="table table-striped">
+                <tr>
+                  <th class="number-cell">Serial Number</th>
+                  <th class="facility-cell">Assigned Communities</th>
+                  <th class="resident-cell">Assigned Residents</th>
+                </tr>
+                <tr *ngFor="let row of filteredRows">
+                  <td class="valign-top">
+                    <h4 class="mt0 mb0">
+                      {{ row.serialNumber }}
+                    </h4>
+
+                    <div class="mt-lg" *ngIf="row.errors.length">
+                      <p class="text-danger text-sm" *ngFor="let error of row.errors">
+                        <span class="fa fa-warning"></span>
+                        {{ error }}
+                      </p>
+                    </div>
+                  </td>
+                  <td class="valign-top">
+                    <div class="panel b mt0 mb-sm" *ngFor="let facility of row.facilities">
+                      <div class="panel-body p-sm">
+                        <a
+                          class="pull-right"
+                          [routerLink]="[
+                            '/account/',
+                            facility.account._id,
+                            'facility',
+                            facility._id,
+                            'devices'
+                          ]"
+                        >
+                          <small>Community Devices</small>
+                        </a>
+                        <a [routerLink]="['/account', facility.account._id]">
+                          <small class="text-muted m0">
+                            {{ facility.account.name }}
+                          </small>
+                        </a>
+                        <h5 class="text-bold m0">
+                          <a
+                            [routerLink]="[
+                              '/account',
+                              facility.account._id,
+                              'facility',
+                              facility._id
+                            ]"
+                          >
+                            {{ facility.name }}
+                          </a>
+                        </h5>
+                        <div class="text-sm bg-gray-lighter p-sm mt-sm">
+                          <strong>Device IDs:</strong><br />
+                          {{ facilityDeviceId(facility, row.serialNumber) }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="valign-top">
+                    <div class="panel b mt0 mb-sm" *ngFor="let resident of row.residents">
+                      <div class="panel-body p-sm">
+                        <h5 class="text-bold m0">
+                          <a
+                            [routerLink]="[
+                              '/account',
+                              resident.account_id,
+                              'facility',
+                              resident.facility_id,
+                              'resident',
+                              resident._id
+                            ]"
+                          >
+                            {{ resident.first_name }} {{ resident.last_name }}
+                          </a>
+                        </h5>
+                        <a [routerLink]="['/account', resident.account_id]">
+                          <small class="text-muted">
+                            {{ accountName(resident.account_id) }}
+                          </small>
+                        </a>
+                        ::
+                        <a
+                          [routerLink]="[
+                            '/account',
+                            resident.account_id,
+                            'facility',
+                            resident.facility_id
+                          ]"
+                        >
+                          <small class="text-muted">
+                            {{ facilityName(resident.facility_id) }}
+                          </small>
+                        </a>
+                        <div class="text-sm bg-gray-lighter p-sm mt-sm">
+                          <strong>Device IDs:</strong><br />
+                          {{ residentDeviceId(resident, row.serialNumber) }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

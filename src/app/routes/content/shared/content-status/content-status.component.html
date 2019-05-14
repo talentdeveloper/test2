@@ -1,0 +1,7 @@
+<span *ngIf="contentItem._id">
+    <span *ngIf="contentItem.computed_status === statusMap.QA" class="btn btn-xs btn-danger status-icon"></span>
+    <span *ngIf="contentItem.computed_status === statusMap.APPROVED" class="btn btn-xs btn-primary status-icon"></span>
+    <span *ngIf="contentItem.computed_status === statusMap.ACTIVE" class="btn btn-xs btn-success status-icon"></span>
+    <span *ngIf="contentItem.computed_status === statusMap.INACTIVE" class="btn btn-xs btn-default status-icon"></span>
+    <span *ngIf="contentItem.computed_status === statusMap.CANCELED" class="btn btn-xs btn-inverse status-icon"></span>
+</span>

@@ -1,0 +1,57 @@
+<div class="modal fade" bsModal #modal="bs-modal" [config]="{backdrop: false}"
+  tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Delete Content Confirmation
+        </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-bold">
+          WARNING: Deleting a content item will also delete any
+          associated files. This action is permanent and cannot be undone.
+        </p>
+        
+        <p>
+          To confirm deletion, please enter the Content Title into the
+          field below and click the CONFIRM button:
+        </p>
+  
+        <div class="form-group">
+          <label class="control-label">Content Title</label>
+          <input
+            [(ngModel)]="retypeModel"
+            class="form-control"
+            placeholder="Content Title"
+            type="text"
+            tabindex="0"
+            aria-invalid="true">
+        </div>
+        
+        <div class="clearfix" *ngIf="!loading">
+          <button type="button" [disabled]="retypeValue !== retypeModel" class="pull-left btn btn-danger" aria-label="Delete" (click)="deleteMessage()">
+            Delete
+          </button>
+          <button type="button" class="pull-right btn" aria-label="Close" (click)="modal.hide()">
+            Cancel
+          </button>
+        </div>
+        
+        <div *ngIf="loading">
+          Loading
+          <br />
+          <div class="ball-pulse">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>

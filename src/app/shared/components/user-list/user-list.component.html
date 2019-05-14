@@ -1,0 +1,89 @@
+<div class="panel panel-default">
+  <div class="panel-body pt0 pb0">
+    <div class="row" *ngIf="!dataLoaded">
+      <div class="col-xs-12 p-xl">Loading ...</div>
+    </div>
+
+    <div class="row" *ngIf="dataLoaded">
+      <div class="col-xs-12 bg-gray-lighter pt pb">
+        <div class="row">
+          <div class="col-xs-12 col-md-6">
+            <div class="input-group">
+              <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+              <input
+                type="text"
+                placeholder="Search users"
+                [(ngModel)]="search"
+                (ngModelChange)="filterUsers()"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 pl0 pr0">
+        <table class="table table-striped">
+          <tr>
+            <th colspan="2">Name</th>
+            <th class="account-cell" *ngIf="showAccountColumn">Account</th>
+            <th class="facility-cell" *ngIf="showFacilityColumn">Community</th>
+            <th class="email-cell" *ngIf="showEmailColumn">Email</th>
+            <th class="type-cell">User Type</th>
+            <th class="status-cell" *ngIf="showAccountStatusColumn">Status</th>
+            <th class="action-cell text-center">
+              Action
+            </th>
+          </tr>
+          <tr *ngFor="let user of filteredUsers">
+            <td class="profile-img-cell">
+              <img
+                class="mr-lg"
+                [appAttachmentSrc]="profileImageForUser(user)"
+                width="40"
+                height="40"
+              />
+            </td>
+            <td>
+              <a href="#" (click)="handleViewUserClick($event, user)" *ngIf="showViewButton">
+                <strong>{{ user.last_name }}, {{ user.first_name }}</strong>
+              </a>
+              <strong *ngIf="!showViewButton">{{ user.last_name }}, {{ user.first_name }}</strong>
+            </td>
+            <td *ngIf="showAccountColumn">{{ getAccountName(user) }}</td>
+            <td *ngIf="showFacilityColumn">{{ getFacilityNames(user) }}</td>
+            <td *ngIf="showEmailColumn">{{ getEmailForUser(user) }}</td>
+            <td>{{ userTypeName(user) }}</td>
+            <td *ngIf="showAccountStatusColumn">
+              <div class="label label-success" *ngIf="userIsActive(user)">Active</div>
+              <div class="label label-warning" *ngIf="userIsInactive(user)">Inactive</div>
+              <div class="label label-info" *ngIf="userIsInvited(user)">Invited</div>
+            </td>
+            <td class="text-center">
+              <a
+                class="btn btn-primary btn-outline btn-sm"
+                (click)="handleViewUserClick($event, user)"
+                *ngIf="showViewButton"
+              >
+                View
+              </a>
+              <a
+                class="btn btn-warning btn-outline btn-sm ml"
+                (click)="handleEditUserClick($event, user)"
+                *ngIf="showEditButton"
+              >
+                Edit
+              </a>
+            </td>
+          </tr>
+        </table>
+
+        <p class="p-lg" *ngIf="!filteredUsers.length">
+          No users available.
+          <a class="btn" href="#" (click)="search = ''; filterUsers()" *ngIf="search.length"
+            >Clear search</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

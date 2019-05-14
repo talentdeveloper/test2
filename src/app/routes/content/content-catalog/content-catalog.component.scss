@@ -1,0 +1,54 @@
+$content-finder-width: 280px;
+$collapsed-sidebar-content-finder-width: 464px;
+$content-filter-width: 280px;
+
+$margin: 20px;
+
+.content-catalog {
+  position: relative;
+
+  // Expanded Sidebar Styles
+  .content-finder-container,
+  .content-finder-filter-container {
+    background: #fff;
+    height: 1086.5px;
+    padding: 20px;
+    width: $content-finder-width;
+  }
+
+  .content-finder-filter-container {
+    margin-right: $margin;
+  }
+
+  .content-page-container {
+    margin-left: $content-finder-width + $margin;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .filters-enabled {
+    margin-left: (2 * $content-filter-width) + (2 * $margin);
+  }
+
+  .content-container {
+    padding: 20px;
+  }
+
+}
+
+// Collapsed Sidebar Styles - just overridding the widths
+.collapsed-sidebar.content-catalog {
+
+  .content-finder-container {
+    width: $collapsed-sidebar-content-finder-width;
+  }
+
+  .content-page-container {
+    margin-left: $collapsed-sidebar-content-finder-width + $margin;
+  }
+
+  .filters-enabled {
+    margin-left: $collapsed-sidebar-content-finder-width + $content-filter-width + (2 * $margin);
+  }
+
+}

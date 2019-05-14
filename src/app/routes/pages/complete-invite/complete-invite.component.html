@@ -1,0 +1,87 @@
+<div class="wrapper">
+  <div class="block-center mt-xl wd-xl">
+
+    <!-- START panel-->
+    <div class="panel panel-dark panel-flat">
+      <div class="panel-heading text-center">
+        <a href="#">
+          <img class="block-center img-rounded" src="/assets/img/logo.png" alt="Image" />
+        </a>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="!invitePageError">
+
+          <h4 class="text-center">Welcome to the iN2L Focus Portal</h4>
+          <p class="text-center pb">
+            Please finish your account registration by completing the profile information below
+          </p>
+
+          <form [formGroup]="completeInviteForm" class="form-validate mb-lg" role="form" name="registerForm" novalidate="" (submit)="submitForm($event, completeInviteForm.value)">
+
+            <div class="form-group has-feedback" *ngIf="inviteEmailAddress">
+              <label class="text-muted">Email Address</label>
+              <div class="text-muted">{{ inviteEmailAddress }}</div>
+            </div>
+
+            <div class="form-group has-feedback">
+              <label class="text-muted">First Name</label>
+              <input class="form-control" type="text" name="first_name" autocomplete="off" formControlName="first_name" required="" />
+              <span class="text-danger" *ngIf="completeInviteForm.controls['first_name'].hasError('required')">This field is required</span>
+            </div>
+
+            <div class="form-group has-feedback">
+              <label class="text-muted">Last Name</label>
+              <input class="form-control" type="text" name="last_name" autocomplete="off" formControlName="last_name" required="" />
+              <span class="text-danger" *ngIf="completeInviteForm.controls['last_name'].hasError('required')">This field is required</span>
+            </div>
+
+            <div class="form-group has-feedback">
+              <label class="text-muted">Password</label>
+              <input class="form-control" id="id-password" type="password" name="password" formControlName="password" [formControl]="completeInviteForm.controls['password']"/>
+              <span class="fa fa-lock form-control-feedback text-muted"></span>
+              <span class="text-danger" *ngIf="completeInviteForm.controls['password'].hasError('required')">This field is required</span>
+              <span class="text-danger" *ngIf="completeInviteForm.controls['password'].hasError('pattern') && (completeInviteForm.controls['password'].dirty || completeInviteForm.controls['password'].touched)">Passwords must have at least one uppercase, one lowercase, one number, and be at least eight characters long.</span>
+            </div>
+
+            <div class="form-group has-feedback">
+              <label class="text-muted">Retype Password</label>
+              <input class="form-control" type="password" name="confirm_password" formControlName="confirm_password"/>
+              <span class="fa fa-lock form-control-feedback text-muted"></span>
+              <span class="text-danger" *ngIf="completeInviteForm.controls['confirm_password'].hasError('required')">This field is required</span>
+              <span class="text-danger" *ngIf="completeInviteForm.get('confirm_password').value && completeInviteForm.controls['confirm_password'].errors?.equalTo">Password does not match</span>
+            </div>
+
+            <div class="form-group has-feedback">
+              <label class="text-muted">Profile Image</label>
+              <input type="file" (change)="setFile($event)">
+            </div>
+
+            <alert type="danger" *ngIf="errorMessage">
+              <i class="fa fa-exclamation-circle"></i>
+              {{ errorMessage }}
+            </alert>
+
+            <button class="btn btn-block btn-primary mt-xl" type="submit">Complete Account</button>
+
+          </form>
+
+        </div>
+        <div *ngIf="invitePageError">
+          <p class="text-danger">{{ invitePageError }}</p>
+          <div class="text-center mt-lg">
+            <h4>Already have an account?</h4>
+            <button class="btn btn-large btn-primary mt mb-lg" routerLink="/login">Sign In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END panel-->
+
+    <footer class="p-lg text-center">
+      &copy; {{ settings.app.year }} - {{ settings.app.name }}<br>
+      <a class="small mr" href="http://in2l.com/privacy-policy/" target="_blank">Privacy Policy</a>
+      <a class="small ml" href="http://in2l.com/terms-of-use/" target="_blank">Terms of Use</a>
+    </footer>
+
+  </div>
+</div>

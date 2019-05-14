@@ -1,0 +1,25 @@
+<div class="container-fluid">
+  <app-page-title title="Community Staff"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <a
+        class="btn btn-primary btn-outline"
+        [routerLink]="['/account', accountId, 'facility', facilityId, 'staff', 'invite']"
+        >Create User</a
+      >
+    </div>
+    <div class="col-xs-12">
+      <app-user-list
+        [users]="users"
+        [showEmailColumn]="true"
+        showAccountStatusColumn="true"
+        showViewButton="true"
+        (onViewUser)="onViewUser($event)"
+        showEditButton="true"
+        (onEditUser)="onEditUser($event)"
+      >
+      </app-user-list>
+    </div>
+  </div>
+</div>

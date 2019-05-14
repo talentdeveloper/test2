@@ -1,0 +1,13 @@
+<div class="sidebar-resource-group">
+  <div class="select-container">
+    <select (change)="onChange($event.target.value)" class="form-control">
+      <option *ngFor="let resource of resources" [value]="resource._id" [selected]="value == resource._id">
+        {{ getDisplayValue(resource) }}
+      </option>
+    </select>
+  </div>
+
+  <div class="children" *ngIf="value !== '' && value !== placeholder">
+    <ng-content></ng-content>
+  </div>
+</div>

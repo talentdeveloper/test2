@@ -1,0 +1,197 @@
+<form
+  [formGroup]="profileForm"
+  class="form-validate"
+  role="form"
+  name="profileForm"
+  novalidate=""
+  (submit)="submitForm($event, profileForm.value)"
+>
+  <div class="panel panel-default bb0">
+    <div class="panel-body bb bt pb0">
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <p class="lead bb">Profile</p>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="control-label">First Name</label>
+                <input
+                  class="form-control"
+                  placeholder="First Name"
+                  type="text"
+                  name="first_name"
+                  formControlName="first_name"
+                  tabindex="0"
+                  aria-invalid="true"
+                />
+                <span class="text-danger" *ngIf="required(profileForm.controls.first_name)"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="control-label">Last Name</label>
+                <input
+                  class="form-control"
+                  placeholder="Last Name"
+                  type="text"
+                  name="last_name"
+                  formControlName="last_name"
+                  tabindex="0"
+                  aria-invalid="true"
+                />
+                <span class="text-danger" *ngIf="required(profileForm.controls.last_name)"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Title</label>
+            <input
+              class="form-control"
+              placeholder="Title"
+              type="text"
+              name="title"
+              formControlName="title"
+              tabindex="0"
+              aria-invalid="true"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Profile Image</label>
+            <app-image-crop-control
+              #cropControl
+              [existingImageSrc]="existingImageSrc"
+              (onRemoveImage)="markRemoveProfileImage($event)"
+            ></app-image-crop-control>
+          </div>
+
+          <p class="lead bb mt-xl">Contact Information</p>
+
+          <div class="row">
+            <div class="col-sm-12 col-md-9">
+              <div class="form-group" *ngIf="!isFacilityUser()">
+                <label class="control-label">Email Address</label>
+                <p>{{ user.email }}</p>
+              </div>
+
+              <div class="form-group" *ngIf="isFacilityUser()">
+                <label class="control-label">Email Address</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Email Address"
+                  formControlName="email"
+                />
+                <span class="text-danger" *ngIf="profileForm.controls['email'].hasError('email')">
+                  This field must be a valid email address
+                </span>
+              </div>
+
+              <div class="form-group" *ngIf="!isIn2lType()">
+                <label class="control-label">Phone Number</label>
+                <input
+                  class="form-control"
+                  placeholder="Phone Number"
+                  formControlName="phone"
+                  type="text"
+                  tabindex="0"
+                  aria-invalid="true"
+                  [textMask]="{ mask: phoneMask }"
+                />
+                <span class="text-danger" *ngIf="hasError(profileForm.controls.phone, 'pattern')"
+                  >This field must be a valid phone number</span
+                >
+              </div>
+
+              <div class="form-group has-feedback" *ngIf="hasPin() && canShowPin()">
+                <label class="control-label">PIN</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  name="pin"
+                  autocomplete="off"
+                  formControlName="pin"
+                />
+                <span class="text-danger" *ngIf="profileForm.controls['pin'].hasError('pattern')">
+                  This needs to be a 5-digit pin number
+                </span>
+              </div>
+
+              <div class="form-group" *ngIf="isFacilityUser()">
+                <label class="control-label">Residents</label>
+                <div class="radio c-radio">
+                  <label>
+                    <input
+                      type="radio"
+                      formControlName="resident_mode"
+                      [checked]="isResidentModeAll()"
+                      value="all"
+                      (click)="setResidentModeAll()"
+                    />
+                    <span class="fa fa-circle"></span>
+                    Show All Residents
+                  </label>
+                </div>
+                <div class="radio c-radio">
+                  <label>
+                    <input
+                      type="radio"
+                      formControlName="resident_mode"
+                      [checked]="isResidentModeSelect()"
+                      value="select"
+                      (click)="setResidentModeSelect()"
+                    />
+                    <span class="fa fa-circle"></span>
+                    Show Selected Residents
+                  </label>
+                </div>
+                <div class="select-residents-container" *ngIf="isResidentModeSelect()">
+                  <ng-select
+                    [multiple]="true"
+                    [allowClear]="true"
+                    [items]="residentNames"
+                    [active]="selectedResidents"
+                    (selected)="handleAddResident($event)"
+                    (removed)="handleRemoveResident($event)"
+                    placeholder="No residents selected"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row bg-gray-lighter mt-lg pt-lg pb-lg">
+        <div class="col-sm-12 col-md-9">
+          <button
+            class="btn btn-labeled btn-info"
+            type="submit"
+            [disabled]="!this.profileForm.valid"
+          >
+            <span class="btn-label"><i class="fa fa-save"></i></span>
+            Save Profile
+          </button>
+          <button
+            class="btn btn-labeled pull-right"
+            type="button"
+            (click)="handleCancelClick($event)"
+          >
+            <span class="btn-label"><i class="fa fa-close"></i></span>
+            Cancel
+          </button>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-xl" *ngIf="successMessage || errorMessage">
+          <p *ngIf="successMessage" class="text-success">{{ successMessage }}</p>
+          <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

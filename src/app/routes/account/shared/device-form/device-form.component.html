@@ -1,0 +1,182 @@
+<form
+  [formGroup]="form"
+  class="form-validate"
+  role="form"
+  name="deviceForm"
+  novalidate=""
+  (submit)="handleOnSubmit($event, form.value)"
+>
+  <div class="panel bb0">
+    <app-panel-title title="Device"></app-panel-title>
+    <div class="panel-body bt">
+      <div class="row" *ngIf="dataLoaded">
+        <div class="col-sm-12 col-md-9">
+          <div class="form-group">
+            <label class="control-label">Product</label>
+            <select
+              class="form-control"
+              formControlName="product"
+              *ngIf="isIn2lAdmin()"
+              (change)="productChanged($event)"
+            >
+              <option *ngFor="let productName of products; let i = index" [value]="productName">
+                {{ productName }}
+              </option>
+            </select>
+            <div *ngIf="!isIn2lAdmin()">{{ form.get('product').value }}</div>
+          </div>
+
+          <div class="form-group" *ngIf="showSerialNumberField()">
+            <label class="control-label">Device Serial Number</label>
+            <p>
+              Serial identification numbers <strong><em>are case sensitive</em></strong> and need to
+              be entered exactly how a device reports them.
+            </p>
+            <input
+              id="serial_number"
+              class="form-control"
+              placeholder="Device Serial Number"
+              type="text"
+              name="serial_number"
+              formControlName="serial_number"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <div
+              class="text-danger"
+              *ngIf="serial_number.invalid && serial_number.value.length != 0"
+            >
+              No spaces or special characters.
+            </div>
+            <span class="text-danger" *ngIf="required(form.controls.serial_number)"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group" *ngIf="permissions.canEditDeviceInternalNickname">
+            <label class="control-label">Device ID</label>
+            <input
+              class="form-control"
+              placeholder="Device ID"
+              type="text"
+              name="nickname"
+              formControlName="nickname"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="required(form.controls.nickname)"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Device Nickname</label>
+            <input
+              class="form-control"
+              placeholder="Nickname"
+              type="text"
+              name="external_nickname"
+              formControlName="external_nickname"
+              tabindex="0"
+              aria-invalid="true"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Skill Level</label>
+            <select class="form-control" formControlName="skill_level">
+              <option value="">Please select a skill level if applicable</option>
+              <option *ngFor="let skillLevel of skillLevels" [value]="skillLevel.value">
+                {{ skillLevel.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Residents</label>
+            <div class="radio c-radio">
+              <label>
+                <input type="radio" formControlName="resident_mode" value="all" />
+                <span class="fa fa-circle"></span>
+                Show All Residents
+              </label>
+            </div>
+            <div class="radio c-radio">
+              <label>
+                <input type="radio" formControlName="resident_mode" value="select" />
+                <span class="fa fa-circle"></span>
+                Show Selected Residents
+              </label>
+            </div>
+            <div
+              class="select-residents-container"
+              *ngIf="form.get('resident_mode').value === 'select'"
+            >
+              <ng-select
+                [multiple]="true"
+                [allowClear]="true"
+                [items]="transformResidents(residents)"
+                [active]="transformResidents(form.controls.residents.value)"
+                (selected)="handleAddResident($event)"
+                (removed)="handleRemoveResident($event)"
+                placeholder="No residents selected"
+              >
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="permissions.canEditContentMode">
+            <label class="control-label">Content Mode</label>
+            <div class="checkbox c-checkbox needsclick">
+              <label>
+                <input type="checkbox" formControlName="qa_content_mode_active" />
+                <span class="fa fa-check"></span>
+                Show QA Content
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="permissions.canEditContentTerms">
+            <label class="control-label">Terms of Use</label>
+            <div class="checkbox c-checkbox needsclick">
+              <label>
+                <input
+                  type="checkbox"
+                  [disabled]="termsOfUseDisabled"
+                  [(ngModel)]="termsOfUseChecked"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <span class="fa fa-check"></span>
+                Show Terms of Use
+              </label>
+            </div>
+            <div *ngIf="termsOfUseSignedDate">Agreed to terms on: {{ termsOfUseSignedDate }}</div>
+            <div *ngIf="termsOfUseDisabled">Waiting for terms to be signed.</div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="!dataLoaded">
+        <div class="col-sm-12 col-md-9">
+          Loading ...
+        </div>
+      </div>
+    </div>
+
+    <div class="row bg-gray-lighter pt-lg pb-lg">
+      <div class="col-sm-12 col-md-9">
+        <button
+          class="btn btn-labeled btn-info"
+          type="submit"
+          [disabled]="!form.valid || !submitEnabled"
+        >
+          <span class="btn-label"><i class="fa fa-save"></i></span>
+          Save Device
+        </button>
+        <button class="btn btn-labeled pull-right" type="button" (click)="handleOnCancelClick()">
+          <span class="btn-label"><i class="fa fa-close"></i></span>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

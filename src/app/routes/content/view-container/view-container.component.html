@@ -1,0 +1,61 @@
+<div class="view-container" *ngIf="container && container._id">
+    <app-panel-title [title]="'Container: ' + container.title" [subTitle]="panelSubtitle"></app-panel-title>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 mb-lg text-right">
+                            <button class="btn btn-primary btn-outline" [routerLink]="['/content', 'catalog', {outlets: {'item': ['container', container._id, 'edit']}}]" [disabled]="changeDisabled">Edit</button>
+                            <button class="btn btn-danger btn-outline" (click)="openDeletePrompt(container._id, container.title)"
+                            [disabled]="changeDisabled">Delete</button>
+                        </div>
+                    </div>
+                    
+                    <form class="form-horizontal p-20">
+                        <div class="form-group">
+                            <div class="col-sm-4 text-bold">Title:</div>
+                            <div class="col-sm-8">{{ container.title }}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="col-sm-4 text-bold">Tile Image:</div>
+                            <div class="col-sm-8"><img [appAttachmentSrc]="container.getTileImage()" /></div>
+                        </div>
+    
+                        <div class="form-group">
+                            <div class="col-sm-4 text-bold">Status:</div>
+                            <div class="col-sm-8">
+                                <app-content-status [contentItem]="container"></app-content-status>
+                                {{ getStatus() }}
+                            </div>
+                        </div>
+    
+                        <div class="form-group">
+                            <div class="col-sm-4 text-bold">New Content Date</div>
+                            <div class="col-sm-8">{{ container.new_content_date | date: 'medium' }} </div>
+                        </div>
+    
+                        <div class="form-group">
+                            <div class="col-sm-4 text-bold">Notes:</div>
+                            <div class="col-sm-8">{{ container.notes }}</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer p-sm text-center">
+                    <small class="text-small text-muted">Container ID: {{ container._id }}</small>
+                </div>
+            </div>
+            <!-- end panel -->
+        
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            
+            <app-document-changed-by [document]="container"></app-document-changed-by>
+        
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="item user-block" *ngIf="userBlockIsVisible()" routerLink="/profile">
+    <!-- User picture-->
+    <div class="user-block-picture">
+        <div class="user-block-status">
+            <img class="img-thumbnail img-circle" [appAttachmentSrc]="profileImageSrc" alt="Avatar">
+            <div class="circle circle-success circle-lg"></div>
+        </div>
+    </div>
+    <!-- Name and Job-->
+    <div class="user-block-info">
+        <span class="user-block-name">
+            {{ 'sidebar.WELCOME' | translate }} {{ currentUser.first_name }} {{ currentUser.last_name }}
+        </span>
+        <span class="user-block-role">{{ currentUser.accountTypeName() }}</span>
+    </div>
+</div>

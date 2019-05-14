@@ -1,0 +1,232 @@
+<div class="container-fluid" *ngIf="resident">
+  <div class="row content-heading view-resident-heading">
+    <div class="col-sm-2">
+      <img
+        alt="Avatar"
+        class="img-thumbnail img-circle resident-header-image pull-right"
+        [appAttachmentSrc]="residentImageSrc()"
+      />
+    </div>
+    <div class="col-sm-10 resident-header-name">
+      {{ resident.first_name }} {{ resident.last_name }}
+    </div>
+  </div>
+
+  <div class="row button-row">
+    <div class="col-xs-12 mb-lg text-right button-row-column">
+      <a
+        class="btn btn-primary btn-outline"
+        [routerLink]="[
+          '/account',
+          accountId,
+          'facility',
+          facilityId,
+          'resident',
+          resident._id,
+          'edit'
+        ]"
+      >
+        Edit Profile
+      </a>
+      <a
+        class="btn btn-success btn-outline ml"
+        *ngIf="resident.isActive()"
+        [routerLink]="[
+          '/account',
+          accountId,
+          'facility',
+          facilityId,
+          'resident',
+          resident._id,
+          'message',
+          'send'
+        ]"
+      >
+        Send Message
+      </a>
+      <a
+        class="btn btn-danger btn-outline ml"
+        (click)="handleResidentStateClick()"
+        *ngIf="resident.isActive()"
+      >
+        Disable Resident
+      </a>
+      <a
+        class="btn btn-success btn-outline ml"
+        (click)="handleResidentStateClick()"
+        *ngIf="!resident.isActive()"
+      >
+        Activate Resident
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <p class="lead bb">Profile</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>First Name:</strong></div>
+                  <div class="col-sm-8">{{ resident.first_name }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Last Name:</strong></div>
+                  <div class="col-sm-8">{{ resident.last_name }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Status:</strong></div>
+                  <div class="col-sm-8">
+                    <div class="label label-success" *ngIf="resident.isActive()">Active</div>
+                    <div class="label label-warning" *ngIf="!resident.isActive()">Inactive</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Birthdate:</strong></div>
+                  <div class="col-sm-8">{{ resident.birthdate }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Skill Level:</strong></div>
+                  <div class="col-sm-8">{{ resident.getSkillLevelName() }}</div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Room Number:</strong></div>
+                  <div class="col-sm-8">
+                    {{ resident.room_number }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Pin:</strong></div>
+                  <div class="col-sm-8" *ngIf="!showPin">
+                    ****
+                    <a href="#" (click)="showPin = true" class="pl-xl">Show pin</a>
+                  </div>
+                  <div class="col-sm-8" *ngIf="showPin">
+                    {{ resident.pin }}
+                    <a href="#" (click)="showPin = false" class="pl-xl">Hide pin</a>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Contacts:</strong></div>
+                  <div class="col-sm-8">
+                    <div class="mb ml-sm row" *ngFor="let contact of resident.family.members">
+                      <div class="col-sm-2 contact-image">
+                        <img
+                          class="img-thumbnail img-circle"
+                          [appAttachmentSrc]="contactImageSrc(resident, contact)"
+                          width="40"
+                        />
+                      </div>
+                      <div class="col-sm-10 contact-info">
+                        {{ contact.name }}<br />
+                        <div class="text-small text-muted">
+                          {{ contact.phone }}
+                          <template #toolTipTemplate let-model="contact">
+                            This family member unsubscribed from text messages
+                            <span *ngIf="contact.twilio_blacklist_date">
+                              on {{ contact.twilio_blacklist_date | date: 'short' }}
+                            </span>
+                          </template>
+                          <span
+                            class="fa fa-exclamation-circle ml-sm"
+                            aria-hidden="true"
+                            [tooltip]="toolTipTemplate"
+                            *ngIf="contact.twilio_blacklist === 'true'"
+                          >
+                          </span>
+                        </div>
+                        <div class="text-small text-muted" *ngIf="contact.skype_user">
+                          {{ contact.skype_user }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4"><strong>Recommended Content Search:</strong></div>
+                  <div class="col-sm-8">{{ resident.recommended_search_terms }}</div>
+                </div>
+              </form>
+            </div>
+
+            <div class="col-md-8">
+              <p class="lead bb">Quick Usage: Two Week History</p>
+              <div class="col-sm-8 resident-usage-column">
+                <div class="panel panel-default inner-panel resident-usage-panel">
+                  <div class="panel-body resident-usage-panel-body">
+                    <div class="quick-usage-chart-title">Resident Usage</div>
+                    <div
+                      flot
+                      [dataset]="charts.weekOverWeekBars.dataset"
+                      [options]="charts.weekOverWeekBars.options"
+                      (ready)="weekOverWeekBarChartReady($event)"
+                      height="300"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4 resident-usage-change-column">
+                <div class="panel panel-default inner-panel">
+                  <div class="panel-body">
+                    <div class="quick-usage-chart-title">Change In Usage</div>
+                    <div
+                      flot
+                      [dataset]="charts.weekOverWeekLine.dataset"
+                      [options]="charts.weekOverWeekLine.options"
+                      (ready)="weekOverWeekLineChartReady($event)"
+                      height="258"
+                    ></div>
+                    <div class="change-in-usage-diff text-center">
+                      {{ charts.weekOverWeekChange }} hrs
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer p-sm text-center">
+          <small class="text-small text-muted">Resident ID: {{ resident._id }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <app-document-changed-by [document]="resident || {}"></app-document-changed-by>
+    </div>
+  </div>
+
+  <div class="panel panel-default outer-panel">
+    <app-drill-down-date-selector
+      [title]="title"
+      [selectedRange]="selectedRange"
+      [products]="dashboardData.residentProducts"
+      [firstYear]="dashboardData.firstYear"
+      (rangeChanged)="rangeChanged($event)"
+    >
+    </app-drill-down-date-selector>
+    <app-drill-down-chart
+      [chartDescription]="chartDescription"
+      [selectedRange]="selectedRange"
+      [chartData]="dashboardData.drillDownChart"
+      (rangeChanged)="rangeChanged($event)"
+    >
+    </app-drill-down-chart>
+
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-sm-6 content-panel-left">
+          <app-content-usage-pie-chart [chartData]="dashboardData.contentPieChart">
+          </app-content-usage-pie-chart>
+        </div>
+        <div class="col-sm-6 content-panel-right">
+          <app-content-usage-report [reportData]="dashboardData.contentAccessedReport.data">
+          </app-content-usage-report>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

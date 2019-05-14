@@ -1,0 +1,102 @@
+<div class="container-fluid">
+  <app-page-title title="Admin Device List By Resident"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <div class="btn-group">
+        <button class="btn btn-primary btn-outline" type="button" routerLink="/admin/device/list">
+          By Serial Number
+        </button>
+        <button
+          class="btn btn-primary btn-outline"
+          type="button"
+          routerLink="/admin/account/device/list"
+        >
+          By Account
+        </button>
+        <button class="btn btn-primary" type="button" routerLink="/admin/resident/device/list">
+          By Resident
+        </button>
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body pt0 pb0">
+          <div class="row" *ngIf="!dataLoaded">
+            <div class="col-xs-12 p-xl">Loading ...</div>
+          </div>
+
+          <div class="row" *ngIf="dataLoaded">
+            <div class="col-xs-12 bg-gray-lighter pt pb">
+              <div class="row">
+                <div class="col-xs-12 col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+                    <input
+                      type="text"
+                      placeholder="Search residents"
+                      [(ngModel)]="search"
+                      (ngModelChange)="filterresidents()"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 pl0 pr0">
+              <table class="table table-striped">
+                <tr>
+                  <th class="resident-cell">Resident</th>
+                  <th>Devices</th>
+                </tr>
+                <tr *ngFor="let resident of residents">
+                  <td class="text-align-top">
+                    <strong>{{ resident.last_name }}, {{ resident.first_name }}</strong>
+                    <p>
+                      {{ accountForResident(resident) }}<br />
+                      {{ facilityForResident(resident) }}
+                    </p>
+                  </td>
+                  <td>
+                    <table
+                      class="table table-striped"
+                      *ngIf="resident.serial_numbers && resident.serial_numbers.length"
+                    >
+                      <tr>
+                        <th>Device</th>
+                        <th>Community Check</th>
+                        <th>Resident Check</th>
+                      </tr>
+                      <tr
+                        class="bb pt-sm pb-sm"
+                        *ngFor="let serialNumber of resident.serial_numbers"
+                      >
+                        <td>
+                          {{ serialNumber }}<br />
+                          <span class="text-muted text-sm">{{ getDeviceId(serial_numbers) }}</span>
+                        </td>
+                        <td>
+                          <div [innerHTML]="facilityCheck(resident, serialNumber)"></div>
+                        </td>
+                        <td>
+                          <div [innerHTML]="residentCheck(resident, serialNumber)"></div>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <div
+                      class="p"
+                      *ngIf="!resident.serial_numbers || !resident.serial_numbers.length"
+                    >
+                      No devices
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

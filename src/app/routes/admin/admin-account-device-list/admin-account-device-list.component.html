@@ -1,0 +1,112 @@
+<div class="container-fluid">
+  <app-page-title title="Admin Device List By Account"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <div class="btn-group">
+        <button class="btn btn-primary btn-outline" type="button" routerLink="/admin/device/list">
+          By Serial Number
+        </button>
+        <button class="btn btn-primary" type="button" routerLink="/admin/account/device/list">
+          By Account
+        </button>
+        <button
+          class="btn btn-primary btn-outline"
+          type="button"
+          routerLink="/admin/resident/device/list"
+        >
+          By Resident
+        </button>
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body pt0 pb0">
+          <div class="row" *ngIf="!dataLoaded">
+            <div class="col-xs-12 p-xl">Loading ...</div>
+          </div>
+
+          <div class="row" *ngIf="dataLoaded">
+            <div class="col-xs-12 bg-gray-lighter pt pb">
+              <div class="row">
+                <div class="col-xs-12 col-md-6"></div>
+              </div>
+            </div>
+            <div class="col-xs-12 pl0 pr0">
+              <table class="table table-striped">
+                <tr>
+                  <th class="account-cell">Account</th>
+                  <th class="account-cell">Community Devices</th>
+                </tr>
+                <tr *ngFor="let account of accounts">
+                  <td class="valign-top">
+                    <a routerLink="/account/{{ account._id }}">
+                      {{ account && account.profile ? account.profile.account_name : 'unknown' }}
+                    </a>
+                    <div class="text-sm text-muted">{{ account._id }}</div>
+                  </td>
+                  <td *ngIf="getAccountFacilities(account._id).length">
+                    <div *ngFor="let facility of getAccountFacilities(account._id)">
+                      <h4 class="p mt0 mb0 bg-gray-lighter">
+                        <a
+                          class="pull-right text-sm"
+                          routerLink="/account/{{ account._id }}/facility/{{
+                            facility._id
+                          }}/devices"
+                        >
+                          Community Device List
+                        </a>
+                        Community:
+                        <a routerLink="/account/{{ account._id }}/facility/{{ facility._id }}">
+                          {{ facility && facility.profile ? facility.profile.name : 'unknown' }}
+                        </a>
+                        <div class="text-sm text-muted">{{ facility._id }}</div>
+                      </h4>
+
+                      <table
+                        class="table table-striped"
+                        *ngIf="getFacilityDevices(facility._id).length"
+                      >
+                        <tr>
+                          <th>Device</th>
+                          <th>Content Mode</th>
+                          <th class="action-cell">Actions</th>
+                        </tr>
+                        <tr *ngFor="let device of getFacilityDevices(facility._id)">
+                          <td>
+                            {{ device.serial_number }}
+                            <p class="text-muted text-sm">
+                              {{ device._id }}
+                            </p>
+                          </td>
+                          <td>{{ device.content_mode }}</td>
+                          <td>
+                            <a
+                              class="btn btn-warning btn-outline btn-sm ml"
+                              routerLink="/account/{{ account._id }}/facility/{{
+                                facility._id
+                              }}/devices/{{ device._id }}/edit"
+                            >
+                              Edit
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <div *ngIf="!getFacilityDevices(facility._id).length">
+                        <div class="text-muted p">No devices</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td *ngIf="!getAccountFacilities(account._id).length">
+                    <span class="text-muted">No facilities</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

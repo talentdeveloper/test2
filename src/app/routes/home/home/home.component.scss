@@ -1,0 +1,11 @@
+@import '../../../shared/styles/app/variables.scss';
+@import '../../../shared/styles/app/media-queries.scss';
+
+.logo-container {
+    margin-top: 100px;
+    margin-bottom: 50px;
+
+    @media only screen and (max-width: $mq-mobile) {
+        margin-top: 50px;
+    }
+}

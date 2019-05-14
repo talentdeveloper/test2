@@ -1,0 +1,26 @@
+<div class="container-fluid">
+  <app-page-title title="Notify Resident"></app-page-title>
+
+  <div *ngIf="!message.created_date">
+    <p>
+      Whenever you send a message, the resident will receive a notification on his or her
+      iN2L-connected device.
+    </p>
+
+    <message-form [message]="message" (onSubmit)="onSubmit($event)"></message-form>
+  </div>
+
+  <div *ngIf="message.created_date">
+    <p class="text-success">
+      Message sent to resident.
+    </p>
+
+    <p>
+      <a
+        class="btn btn-primary btn-outline btn-sm"
+        [routerLink]="['/account', accountId, 'facility', facilityId, 'resident']"
+        >Back</a
+      >
+    </p>
+  </div>
+</div>

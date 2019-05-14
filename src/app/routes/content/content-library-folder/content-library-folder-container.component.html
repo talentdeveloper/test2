@@ -1,0 +1,8 @@
+<app-content-library-list
+  [libraryPath]="path"
+  [libraryItems]="libraryItems"
+  [allLibraryPaths]="libraryPaths"
+  [isSearchResults]="isSearchResults"
+  (itemClicked)="updateView($event)"
+  (changeEvent)="changeEvent($event)"
+></app-content-library-list>

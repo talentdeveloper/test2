@@ -1,0 +1,157 @@
+<div class="panel panel-default outer-panel">
+  <div class=" panel-body">
+    <div class="panel-body">
+      <div class="row" *ngIf="!!contentItem">
+        <div class="col-sm-12">
+          <div class="panel panel-default inner-panel">
+            <div class="panel-heading">
+              {{ contentItem.title }}
+              <button
+                class="btn btn-danger btn-outline pull-right ml-sm"
+                (click)="deleteModal.show()"
+              >
+                Delete
+              </button>
+              <button class="btn btn-primary btn-outline pull-right ml-sm" (click)="editContent()">
+                Edit
+              </button>
+            </div>
+            <div class="panel-body" *ngIf="!!contentItem">
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="section-title">PRODUCTS</div>
+                  <button class="btn btn-success" *ngIf="contentItem.products.engage">
+                    ENGAGE
+                  </button>
+                  <button class="btn btn-info ml-sm" *ngIf="contentItem.products.focus">
+                    FOCUS
+                  </button>
+                  <button class="btn btn-warning ml-sm" *ngIf="contentItem.products.rehab">
+                    REHAB
+                  </button>
+                </div>
+                <div class="col-sm-3">
+                  <div class="section-title">PLATFORMS</div>
+                  <button class="btn btn-info" *ngIf="contentItem.platforms.android">
+                    ANDROID
+                  </button>
+                  <button class="btn btn-success ml-sm" *ngIf="contentItem.platforms.pc">PC</button>
+                </div>
+              </div>
+
+              <div class="row content-details-group">
+                <div class="col-sm-12">
+                  <img [appAttachmentSrc]="contentItem.getTileImage()" class="content-image" />
+                  <div class="mb-sm">
+                    <span class="text-bold">Title:</span> {{ contentItem.title }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Content Type:</span>
+                    {{ contentTypeNames[contentItem.content_type] }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Display Type:</span>
+                    {{ displayTypeNames[contentItem.display_type] }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Search Keywords:</span>
+                    {{ contentItem.keywords.join(', ') }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Skill Level:</span> {{ getSkillLevelLabels() }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Platforms:</span>
+                    {{ itemAnalytics ? itemAnalytics.platforms : '' }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Last Used:</span>
+                    {{ itemAnalytics ? itemAnalytics.last_time_used : '' }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Times Accessed:</span>
+                    {{ itemAnalytics ? itemAnalytics.times_accessed : '' }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-3"><div class="section-title">SETTINGS</div></div>
+              </div>
+              <div class="row settings-details">
+                <div class="col-sm-12">
+                  <div class="mb-sm">
+                    <span class="text-bold">Usage Settings:</span> {{ getUsageSettingsLabels() }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Accessibility:</span> {{ getAccessibilityLabels() }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Source:</span> {{ contentItem.source }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">Notes:</span> {{ contentItem.notes }}
+                  </div>
+                  <div class="mb-sm">
+                    <span class="text-bold">License Expiration Date:</span>
+                    {{ contentItem.license_expiration_date }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Item Modal -->
+<div
+  class="modal fade"
+  bsModal
+  #deleteModal="bs-modal"
+  [config]="{ backdrop: false }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="deleteContentLibraryItemModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Delete {{ contentItem.title }}?</h4>
+        <button
+          type="button"
+          class="close pull-right"
+          aria-label="Close"
+          (click)="deleteModal.hide()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-lg">
+          <div class="col-sm-12">
+            <button
+              type="button"
+              class="pull-left btn"
+              aria-label="Cancel"
+              (click)="deleteModal.hide()"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="pull-right btn btn-primary"
+              aria-label="Save"
+              (click)="submitDelete()"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

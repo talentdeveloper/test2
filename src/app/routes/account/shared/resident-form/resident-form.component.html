@@ -1,0 +1,240 @@
+<form
+  [formGroup]="residentForm"
+  class="form-validate"
+  role="form"
+  name="addAccountForm"
+  novalidate=""
+  (submit)="submitForm($event, residentForm.value)"
+>
+  <div class="panel panel-default bb0">
+    <div class="panel-body bb bt pb0">
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <p class="lead bb">Profile</p>
+
+          <div class="form-group">
+            <label class="control-label">First Name</label>
+            <input
+              class="form-control"
+              placeholder="First Name"
+              type="text"
+              name="first_name"
+              formControlName="first_name"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span
+              class="text-danger"
+              *ngIf="residentForm.controls['first_name'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Last Name</label>
+            <input
+              class="form-control"
+              placeholder="Last Name"
+              type="text"
+              name="last_name"
+              formControlName="last_name"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span
+              class="text-danger"
+              *ngIf="residentForm.controls['last_name'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Profile Image</label>
+            <app-image-crop-control
+              #cropControl
+              [existingImageSrc]="existingImageSrc"
+              (onRemoveImage)="markRemoveProfileImage($event)"
+            >
+            </app-image-crop-control>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">Birthdate</label>
+                <input
+                  class="form-control"
+                  placeholder="Birthdate"
+                  formControlName="birthdate"
+                  type="text"
+                  tabindex="0"
+                  aria-invalid="true"
+                  [textMask]="{ mask: dateMask }"
+                />
+                <span class="text-danger" *ngIf="hasDateError(residentForm.get('birthdate'))"
+                  >Birthdate is not valid.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Skill Level</label>
+            <select class="form-control" formControlName="skill_level">
+              <option value="">Please select a skill level if applicable</option>
+              <option *ngFor="let skillLevel of skillLevels" [value]="skillLevel.value">
+                {{ skillLevel.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Recommended Content Search</label>
+            <input
+              class="form-control"
+              placeholder="App Search Value"
+              type="text"
+              name="recommended_search_terms"
+              formControlName="recommended_search_terms"
+              tabindex="0"
+              aria-invalid="true"
+            />
+          </div>
+
+          <p class="lead bb mt-xl">Community</p>
+
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">Room Number</label>
+                <input
+                  class="form-control"
+                  placeholder="Room Number"
+                  formControlName="room_number"
+                  type="text"
+                  tabindex="0"
+                  aria-invalid="true"
+                />
+                <span
+                  class="text-danger"
+                  *ngIf="residentForm.controls['room_number'].hasError('required')"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">Pin</label>
+                <input
+                  class="form-control"
+                  placeholder="Pin"
+                  formControlName="pin"
+                  type="text"
+                  tabindex="0"
+                  aria-invalid="true"
+                  [textMask]="{ mask: pinMask }"
+                />
+                <span class="text-danger" *ngIf="residentForm.controls['pin'].hasError('required')"
+                  >This field is required</span
+                >
+                <span
+                  class="text-danger"
+                  *ngIf="
+                    residentForm.controls['pin'].hasError('pattern') &&
+                    (residentForm.controls['pin'].dirty || residentForm.controls['pin'].touched)
+                  "
+                  >This needs to be a 4-digit pin number</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <p class="lead bb mt-xl">Contacts</p>
+
+          <div class="form-group" formGroupName="family">
+            <div formArrayName="members" class="well bg-gray-lighter">
+              <div class="row">
+                <div class="col-sm-1 pr-sm">&nbsp;</div>
+                <div class="col-sm-2 pr-sm pl-sm mt"><strong>Name</strong></div>
+                <div class="col-sm-2 pr-sm pl-sm mt"><strong>Relation</strong></div>
+                <div class="col-sm-3 pr-sm pl-sm mt"><strong>Email</strong></div>
+                <div class="col-sm-2 pr-sm pl-sm mt"><strong>Phone</strong></div>
+                <div class="col-sm-2 pl-sm">&nbsp;</div>
+              </div>
+              <div class="row mb" *ngFor="let member of contactsFormArray.controls; let i = index">
+                <div class="col-sm-12" [ngClass]="{ blacklisted: isMemberBlacklisted(member) }">
+                  <div class="row">
+                    <div class="col-sm-1 pr-sm">
+                      <img
+                        class="mr-lg"
+                        width="40"
+                        height="40"
+                        [appAttachmentSrc]="getContactImageSrc(member)"
+                      />
+                    </div>
+                    <div class="col-sm-2 pl-sm pr-sm mt">{{ member.get('name').value }}</div>
+                    <div class="col-sm-2 pl-sm pr-sm mt">{{ member.get('relation').value }}</div>
+                    <div class="col-sm-3 pl-sm pr-sm mt">{{ member.get('email').value }}</div>
+                    <div class="col-sm-2 pl-sm pr-sm mt">
+                      {{ member.get('phone').value }}
+                      <div class="text-danger" *ngIf="isDuplicatePhoneNumber(member)">
+                        This phone number is already used for another contact.
+                      </div>
+                    </div>
+                    <div class="col-sm-2 pl-sm">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        (click)="editContact(i, member)"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-danger btn-sm"
+                        (click)="removeContact(i)"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="text-sm text-primary" *ngIf="isMemberBlacklisted(member)">
+                    This family member unsubscribed from text messages
+                    <span *ngIf="member.controls.twilio_blacklist_date.value">
+                      on {{ member.controls.twilio_blacklist_date.value | date: 'short' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-xs" (click)="addContact()">
+                Add Contact +
+              </button>
+            </div>
+
+            <p></p>
+          </div>
+        </div>
+      </div>
+      <div class="row bg-gray-lighter mt-lg pt-lg pb-lg">
+        <div class="col-sm-12 col-md-9">
+          <button class="btn btn-labeled btn-info" type="submit" [disabled]="saveDisabled()">
+            <span class="btn-label"><i class="fa fa-save"></i></span>
+            {{ editMode ? 'Save' : 'Add' }} Resident
+          </button>
+          <button class="btn btn-labeled pull-right" type="button" (click)="cancel()">
+            <span class="btn-label"><i class="fa fa-close"></i></span>
+            Cancel
+          </button>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-xl" *ngIf="successMessage || errorMessage">
+          <p *ngIf="successMessage" class="text-success">{{ successMessage }}</p>
+          <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<app-document-changed-by [document]="resident || {}"></app-document-changed-by>
+<app-resident-contact-form-modal></app-resident-contact-form-modal>

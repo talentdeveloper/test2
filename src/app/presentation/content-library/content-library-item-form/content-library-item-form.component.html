@@ -1,0 +1,452 @@
+<div class="panel panel-default outer-panel">
+  <div class=" panel-body">
+    <div class="panel-body">
+      <form
+        [formGroup]="form"
+        class="form-validate"
+        role="form"
+        name="contentForm"
+        novalidate=""
+        (submit)="submit(form.value)"
+      >
+        <div class="panel bb0">
+          <div class="panel-body bb bt">
+            <div class="row">
+              <div class="col-sm-12 col-md-9">
+                <div class="form-group">
+                  <label class="control-label">Tile Image</label>
+                  <app-image-crop-control
+                    #cropControl
+                    canvasWidth="200"
+                    canvasHeight="150"
+                    width="200"
+                    height="150"
+                    croppedWidth="300"
+                    croppedHeight="200"
+                    label="Image"
+                    [keepAspect]="false"
+                    [existingImageSrc]="tileImagePath"
+                  >
+                  </app-image-crop-control>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Title</label>
+                  <input
+                    class="form-control"
+                    placeholder="Title"
+                    type="text"
+                    formControlName="title"
+                    tabindex="0"
+                    aria-invalid="true"
+                  />
+                  <span class="text-danger" *ngIf="form.controls.title.hasError('required')"
+                    >This field is required</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Platforms</label>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.platforms.controls.android"
+                          />
+                          <em class="bg-indigo-500"></em> Android
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.platforms.controls.pc"
+                          />
+                          <em class="bg-indigo-500"></em> PC
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4"></div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Products</label>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.products.controls.engage"
+                          />
+                          <em class="bg-indigo-500"></em> ENGAGE
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.products.controls.focus"
+                          />
+                          <em class="bg-indigo-500"></em> FOCUS
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.products.controls.rehab"
+                          />
+                          <em class="bg-indigo-500"></em> REHAB
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Content Type</label>
+                  <select
+                    class="form-control"
+                    formControlName="content_type"
+                    (change)="onContentTypeChange($event)"
+                  >
+                    <option *ngFor="let item of contentTypeList()" [value]="item.value">
+                      {{ item.label }}
+                    </option>
+                  </select>
+                  <span class="text-danger" *ngIf="form.controls.content_type.hasError('required')"
+                    >This field is required</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Display Type</label>
+                  <select class="form-control" formControlName="display_type">
+                    <option *ngFor="let item of displayTypeList()" [value]="item.value">
+                      {{ item.label }}
+                    </option>
+                  </select>
+                  <span class="text-danger" *ngIf="form.controls.display_type.hasError('required')"
+                    >This field is required</span
+                  >
+                </div>
+
+                <div class="form-group" *ngIf="fileUploadRequired()">
+                  <p class="lead bb">Content File</p>
+
+                  <label class="control-label">File</label>
+
+                  <div *ngIf="contentItem.s3_key && contentItem.s3_key !== '' && !replaceFile">
+                    <button
+                      (click)="replaceFile = true"
+                      type="button"
+                      class="btn btn-primary file-name-spacer"
+                    >
+                      Replace File
+                    </button>
+                    {{ contentItem.s3_key }}
+                  </div>
+                  <div *ngIf="!contentItem.s3_key || contentItem.s3_key === '' || replaceFile">
+                    <input type="file" (change)="fileChangeListener($event)" />
+
+                    <div class="text-danger" *ngIf="fileValidationMessage.length > 0">
+                      {{ fileValidationMessage }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" *ngIf="form.controls.content_type.value === 'website'">
+                  <label class="control-label">Content URL</label>
+                  <input
+                    class="form-control"
+                    placeholder="e.g.: https://www.wikipedia.com"
+                    type="text"
+                    formControlName="content_url"
+                    tabindex="0"
+                    aria-invalid="true"
+                  />
+                  <span class="text-danger" *ngIf="form.controls.content_url.hasError('url')"
+                    >Invalid url</span
+                  >
+                  <span class="text-danger" *ngIf="form.controls.content_url.hasError('required')"
+                    >URL required</span
+                  >
+                </div>
+
+                <div class="form-group" *ngIf="form.controls.content_type.value === 'windowsexe'">
+                  <label class="control-label">Windows EXE Locations</label>
+                  <span
+                    class="text-danger"
+                    *ngIf="form.controls.windows_exe_locations.hasError('required')"
+                    >This field is required</span
+                  >
+                  <textarea
+                    class="form-control"
+                    formControlName="windows_exe_locations"
+                    rows="10"
+                    aria-multiline="true"
+                    tabindex="0"
+                    aria-invalid="false"
+                  ></textarea>
+                </div>
+
+                <div class="form-group" *ngIf="form.controls.content_type.value === 'video'">
+                  <label class="control-label">Video Info</label>
+                  <span
+                    class="text-danger"
+                    *ngIf="form.controls.video_description.hasError('required')"
+                    >This field is required</span
+                  >
+                  <app-rich-text-editor formControlName="video_description"></app-rich-text-editor>
+                </div>
+
+                <div class="row" *ngIf="form.controls.content_type.value === 'happyneuron'">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label class="control-label">Happy Neuron Game ID</label>
+                      <input
+                        class="form-control"
+                        placeholder="Game ID"
+                        type="text"
+                        formControlName="happy_neuron_game_id"
+                        tabindex="0"
+                        aria-invalid="true"
+                      />
+                      <span
+                        class="text-danger"
+                        *ngIf="form.controls.happy_neuron_game_id.hasError('required')"
+                        >Game ID required</span
+                      >
+                      <span
+                        class="text-danger"
+                        *ngIf="form.controls.happy_neuron_game_id.hasError('digits')"
+                        >Game ID must be an integer</span
+                      >
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div
+                      class="form-group"
+                      *ngIf="form.controls.content_type.value === 'happyneuron'"
+                    >
+                      <label class="control-label">Happy Neuron Language</label>
+                      <select class="form-control" formControlName="happy_neuron_lang">
+                        <option *ngFor="let lang of happyNeuronLangOptions" [value]="lang.value">
+                          {{ lang.label }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group mb-xl">
+                  <label class="control-label">Search Keyword(s)</label>
+                  <tag-input
+                    formControlName="keywords"
+                    placeholder="+ word or phrase"
+                    secondaryPlaceholder="Enter keywords here"
+                    [errorMessages]="keywordErrorMessageMap"
+                    [modelAsStrings]="true"
+                    [transform]="normalizeKeyword"
+                    [validators]="keywordValidators"
+                  >
+                  </tag-input>
+                </div>
+
+                <p class="lead bb">Usage Settings</p>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.usage_settings.controls.solo_use"
+                          />
+                          <em class="bg-indigo-500"></em> Solo Use
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.usage_settings.controls.joint_use"
+                          />
+                          <em class="bg-indigo-500"></em> Joint Use
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.usage_settings.controls.group_use"
+                          />
+                          <em class="bg-indigo-500"></em> Group Use
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="lead bb">Skill Level</p>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.skill_level.controls.level_one"
+                          />
+                          <em class="bg-indigo-500"></em> Level One
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.skill_level.controls.level_two"
+                          />
+                          <em class="bg-indigo-500"></em> Level Two
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.skill_level.controls.level_three"
+                          />
+                          <em class="bg-indigo-500"></em> Level Three
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="lead bb">Accessibility Considerations</p>
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.accessibility.controls.hearing_impairment"
+                          />
+                          <em class="bg-indigo-500"></em> Hearing Impairment
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.accessibility.controls.physical_impairment"
+                          />
+                          <em class="bg-indigo-500"></em> Physical Impairment
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            [formControl]="form.controls.accessibility.controls.vision_impairment"
+                          />
+                          <em class="bg-indigo-500"></em> Vision Impairment
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Source</label>
+                  <input
+                    class="form-control"
+                    placeholder="Source"
+                    type="text"
+                    formControlName="source"
+                    tabindex="0"
+                    aria-invalid="true"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">License Expiration Date</label>
+                  <input
+                    bsDatepicker
+                    #licenseDatePicker="bsDatepicker"
+                    placement="bottom left"
+                    [bsConfig]="{ containerClass: 'theme-blue' }"
+                    class="form-control"
+                    placeholder="License Expiration Date (MM/DD/YYYY)"
+                    type="text"
+                    formControlName="license_expiration_date"
+                  />
+                  <span
+                    class="text-danger"
+                    *ngIf="isValidDate(form.controls.license_expiration_date, 'MM/DD/YYYY')"
+                    >Invalid date</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label">Notes</label>
+                  <textarea
+                    class="form-control"
+                    placeholder="Notes"
+                    formControlName="notes"
+                    rows="4"
+                    aria-multiline="true"
+                    tabindex="0"
+                    aria-invalid="false"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="row bg-gray-lighter mt-lg pt-lg pb-lg">
+                <div class="col-sm-12 col-md-9">
+                  <button
+                    class="btn btn-labeled btn-info"
+                    type="submit"
+                    [disabled]="submitDisabled()"
+                  >
+                    <span class="btn-label"><i class="fa fa-save"></i></span> Save
+                  </button>
+                  <button class="btn btn-labeled pull-right" (click)="cancel()">
+                    <span class="btn-label"><i class="fa fa-close"></i></span> Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

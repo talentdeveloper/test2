@@ -1,0 +1,36 @@
+<div [ngClass]="{ 'collapsed-sidebar': sidebarIsCollapsed }" class="content-catalog clearfix">
+  <div *ngIf="enableFilter" class="content-finder-filter-container pull-left">
+    <app-content-finder-options (onOptionsChange)="handleFilterChange($event)">
+    </app-content-finder-options>
+  </div>
+
+  <div class="content-finder-container pull-left">
+    <p *ngIf="!isSimulatedDateActive">
+      <button
+        (click)="toggleFilter($event)"
+        class="btn btn-primary"
+        type="button">
+        {{ enableFilter ? 'Hide Filters' : 'Show Filters'}}
+      </button>
+    </p>
+
+    <app-content-finder
+      [enableFilter]="enableFilter"
+      (onSelect)="handleSelectRouter($event)"
+      (onContainerCreate)="handleContainerCreate($event)"
+      (onContentCreate)="handleContentCreate($event)"
+      (onSimulatedDateChange)="handleSimulatedDateChange($event)"
+      [filters]="filters">
+    </app-content-finder>
+  </div>
+
+  <div #contentPageContainer class="content-page-container" [ngClass]="{ 'filters-enabled': enableFilter }">
+    <div class="content-container">
+      <router-outlet name="item"></router-outlet>
+    </div>
+  </div>
+</div>
+
+<delete-content></delete-content>
+<delete-container></delete-container>
+<cancel-prompt></cancel-prompt>

@@ -1,0 +1,47 @@
+<div class="container-fluid" *ngIf="user">
+  <app-page-title title="{{ user.first_name }} {{ user.last_name }} Account Type"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <form
+        [formGroup]="accountTypeForm"
+        class="form-validate"
+        role="form"
+        name="accountTypeForm"
+        novalidate
+        (submit)="submitForm($event)"
+      >
+        <div class="panel panel-default bb0">
+          <div class="panel-body bb bt pb0">
+            <div class="row">
+              <div class="col-xs-6">
+                <app-user-type-select [parentForm]="accountTypeForm" [existingUser]="user">
+                </app-user-type-select>
+              </div>
+            </div>
+            <div class="row bg-gray-lighter mt-lg pt-lg pb-lg">
+              <div class="col-xs-6">
+                <button
+                  class="btn btn-labeled btn-info"
+                  type="submit"
+                  [disabled]="!this.accountTypeForm.valid"
+                >
+                  <span class="btn-label"><i class="fa fa-save"></i></span>
+                  Change Account Type
+                </button>
+                <button
+                  class="btn btn-labeled pull-right"
+                  type="button"
+                  (click)="handleCancelClick()"
+                >
+                  <span class="btn-label"><i class="fa fa-close"></i></span>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

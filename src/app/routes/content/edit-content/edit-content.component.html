@@ -1,0 +1,8 @@
+<div class="edit-content" *ngIf="content && content._id">
+  <content-form
+    [errorMessage]="errorMessage"
+    [submitEnabled]="submitEnabled"
+    (onSubmit)="onSubmit($event)"
+    [content]="content">
+  </content-form>
+</div>

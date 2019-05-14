@@ -1,0 +1,15 @@
+<div class="content-heading">
+  <ul class="breadcrumb pull-right">
+    <li><app-upload-progress></app-upload-progress></li>
+  </ul>
+  <ul class="breadcrumb">
+    <li><a routerLink="">Home</a></li>
+    <li
+      *ngFor="let breadcrumb of (breadcrumbs | async); let last = last"
+      [ngClass]="{ active: last }"
+    >
+      <a *ngIf="!last" [routerLink]="[breadcrumb.url]">{{ breadcrumb.label }}</a>
+      <span *ngIf="last">{{ breadcrumb.label }}</span>
+    </li>
+  </ul>
+</div>

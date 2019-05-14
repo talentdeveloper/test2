@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <app-page-title
+    title="{{ user.first_name }} {{ user.last_name }} Profile"
+    *ngIf="user"
+  ></app-page-title>
+
+  <app-user-view
+    [user]="user"
+    [showEditButton]="true"
+    (onEditUser)="onEditUser($event)"
+    [showSendResetButton]="true"
+    [showUserStateButton]="true"
+  >
+  </app-user-view>
+</div>

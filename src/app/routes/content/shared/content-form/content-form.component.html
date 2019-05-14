@@ -1,0 +1,346 @@
+<form [formGroup]="form" class="form-validate" role="form" name="contentForm" novalidate="" (submit)="handleOnSubmit($event, form.value)">
+  <div class="panel bb0">
+    <div class="panel-body bb bt">
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+
+          <div class="form-group">
+            <label class="control-label">Container Image</label>
+            <app-image-crop-control #cropControl
+              canvasWidth="200"
+              canvasHeight="150"
+              width="200"
+              height="150"
+              croppedWidth="300"
+              croppedHeight="200"
+              label="Image"
+              [keepAspect]="false"
+              [existingImageSrc]="tileImagePath">
+            </app-image-crop-control>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Title</label>
+            <input
+              class="form-control"
+              placeholder="Title"
+              type="text"
+              formControlName="title"
+              tabindex="0"
+              aria-invalid="true">
+            <span class="text-danger" *ngIf="required(form.controls.title)">This field is required</span>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Container Title Override</label>
+            <p>
+              If populated, this title will replace the default parent container title that displays
+              with the content button within the Search and My Page sections of the iN2L Mobility Application.
+            </p>
+            <input
+              class="form-control"
+              placeholder="Container Title Override"
+              type="text"
+              formControlName="parent_title_override"
+              tabindex="0"
+              aria-invalid="true">
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Products</label>
+            <div class="row">
+              <div class="col-sm-4" *ngFor="let i = index; let control of form.controls.products.controls">
+                <div class="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [formControl]="control" (change)="onProductChange($event)"/>
+                    <em class="bg-indigo-500"></em>
+                    {{productList[i].label}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Content Type</label>
+            <select class="form-control" formControlName="content_type" (change)="onContentTypeChange($event)">
+              <option *ngFor="let item of typeList" [value]="item.value">
+                {{ item.label }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="required(form.controls.content_type)">This field is required</span>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Display Content Type</label>
+            <select class="form-control" formControlName="display_type">
+              <option *ngFor="let item of displayTypeList" [value]="item.value">
+                {{ item.label }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="required(form.controls.display_type)">This field is required</span>
+          </div>
+
+          <div class="form-group" *ngIf="form.controls.content_type.value === 'website'">
+            <label class="control-label">Content URL</label>
+            <input
+              class="form-control"
+              placeholder="e.g.: https://www.wikipedia.com"
+              type="text"
+              formControlName="content_url"
+              tabindex="0"
+              aria-invalid="true">
+            <span class="text-danger" *ngIf="hasError(form.controls.content_url, 'url')">Invalid url</span>
+            <span class="text-danger" *ngIf="hasError(form.controls.content_url, 'required')">URL required</span>
+          </div>
+
+          <div class="form-group" *ngIf="form.controls.content_type.value === 'windowsexe'">
+            <label class="control-label">Windows EXE Locations</label>
+            <span class="text-danger" *ngIf="required(form.controls.windows_exe_locations)">This field is required</span>
+            <textarea class="form-control" formControlName="windows_exe_locations"
+                      rows="10" aria-multiline="true" tabindex="0" aria-invalid="false"
+                      (keyup)="onWindowsExeLocationsChange($event)"></textarea>
+          </div>
+
+          <div class="form-group" *ngIf="form.controls.content_type.value === 'video'">
+            <label class="control-label">Video Info</label>
+            <span class="text-danger" *ngIf="required(form.controls.video_info)">This field is required</span>
+            <app-rich-text-editor formControlName="video_info"></app-rich-text-editor>
+          </div>
+
+          <div class="row" *ngIf="form.controls.content_type.value === 'happyneuron'">
+            <div class="col-sm-6">
+
+              <div class="form-group">
+                <label class="control-label">Happy Neuron Game ID</label>
+                <input class="form-control" placeholder="Game ID" type="text" formControlName="happy_neuron_game_id" tabindex="0" aria-invalid="true">
+                <span class="text-danger" *ngIf="hasError(form.controls.happy_neuron_game_id, 'required')">Game ID required</span>
+                <span class="text-danger" *ngIf="hasError(form.controls.happy_neuron_game_id, 'digits')">Game ID must be an integer</span>
+              </div>
+
+            </div>
+            <div class="col-sm-6">
+
+              <div class="form-group" *ngIf="form.controls.content_type.value === 'happyneuron'">
+                <label class="control-label">Happy Neuron Language</label>
+                <select class="form-control" formControlName="happy_neuron_lang">
+                  <option *ngFor="let lang of happyNeuronLangOptions" [value]="lang.value">
+                    {{ lang.label }}
+                  </option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="form-group mb-xl">
+            <label class="control-label">Search Keyword(s)</label>
+            <tag-input
+              formControlName="keywords"
+              placeholder="+ word or phrase"
+              secondaryPlaceholder="Enter keywords here"
+              [errorMessages]="keywordErrorMessageMap"
+              [modelAsStrings]="true"
+              [transform]="handleKeywordTransform"
+              [validators]="keywordValidators">
+            </tag-input>
+          </div>
+
+          <p class="lead bb">Usage Settings</p>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4" *ngFor="let i = index; let control of form.controls.use_tag.controls">
+                <div class="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [formControl]="control"/>
+                    <em class="bg-indigo-500"></em>
+                    {{tagList[i].label}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="lead bb">Skill Level</p>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4" *ngFor="let i = index; let control of form.controls.skill_level.controls">
+                <div class="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [formControl]="control"/>
+                    <em class="bg-indigo-500"></em>
+                    {{skillLevelList[i].label}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="lead bb">Accessibility Considerations</p>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4" *ngFor="let i = index; let control of form.controls.accessibility.controls">
+                <div class="checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [formControl]="control"/>
+                    <em class="bg-indigo-500"></em>
+                    {{accessibilityList[i].label}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Source</label>
+            <input
+              class="form-control"
+              placeholder="Source"
+              type="text"
+              formControlName="source"
+              tabindex="0"
+              aria-invalid="true">
+          </div>
+
+
+          <div class="form-group">
+            <label class="control-label">License Expiration Date</label>
+            <input bsDatepicker #licenseDatePicker="bsDatepicker" placement="bottom left" [bsConfig]="{containerClass: 'theme-blue'}"
+                  class="form-control" placeholder="License Expiration Date (MM/DD/YY)" type="text"
+                  formControlName="license_expiration_date">
+            <span class="text-danger" *ngIf="hasDateError(form.controls.license_expiration_date)">Invalid date</span>
+          </div>
+          
+          <div class="form-group" *ngIf="fileUploadRequired()">
+
+            <p class="lead bb">Content File</p>
+
+            <label class="control-label">File</label>
+
+            <div *ngIf="content.s3_key && content.s3_key !== '' && !replaceFile">
+              <button
+                (click)="replaceFile = true"
+                type="button"
+                class="btn btn-primary file-name-spacer">
+                Replace File
+              </button>
+              {{content.s3_key}}
+            </div>
+            <div *ngIf="!content.s3_key || content.s3_key === '' || replaceFile">
+              <input
+                type="file"
+                (change)="fileChangeListener($event)" />
+
+              <div class="text-danger" *ngIf="fileValidationMessage.length > 0">
+                {{ fileValidationMessage }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Status</label>
+            <select class="form-control" formControlName="content_status">
+              <option *ngFor="let contentStatus of contentStatusList" [value]="contentStatus.value">
+                {{ contentStatus.label }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="required(form.controls.content_status)">This field is required</span>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Active Date Ranges</label>
+
+            <div class="well bg-gray-lighter">
+              <div class="row" *ngFor="let range of form.controls.active_dates.controls; let i = index">
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label">Active Start Date</label>
+                    <input
+                      bsDatepicker placement="bottom left" [bsConfig]="{containerClass: 'theme-blue'}"
+                      [compareToEndControl]="range.controls.end"
+                      class="form-control"
+                      placeholder="Active Start Date (MM/DD/YYYY)"
+                      type="text"
+                      [formControl]="range.controls.start">
+                    <span class="text-danger" *ngIf="hasDateError(range.controls.start)">Invalid date</span>
+                    <span class="text-danger" *ngIf="hasError(range.controls.start, 'endDate')">Date must be before the end date</span>
+                    <span class="text-danger" *ngIf="required(range.controls.start)">This field is required</span>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label">Active End Date</label>
+                    <input
+                      bsDatepicker placement="bottom left" [bsConfig]="{containerClass: 'theme-blue'}"
+                      [compareToStartControl]="range.controls.start"
+                      class="form-control"
+                      placeholder="Active End Date (MM/DD/YYYY)"
+                      type="text"
+                      [formControl]="range.controls.end">
+                    <span class="text-danger" *ngIf="hasDateError(range.controls.end)">Invalid date</span>
+                    <span class="text-danger" *ngIf="hasError(range.controls.end, 'startDate')">Date must be after the start date</span>
+                    <span class="text-danger" *ngIf="required(range.controls.end)">This field is required</span>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <label class="control-label">&nbsp;</label>
+                  <div>
+                    <button type="button" class="btn btn-danger btn-sm" (click)="removeDateRange(i)">
+                      Remove
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+              <button type="button" class="btn btn-primary btn-xs" (click)="addDateRange()">
+                Add Date Range
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Notes</label>
+            <textarea class="form-control" placeholder="Notes" formControlName="notes" rows="4" aria-multiline="true" tabindex="0" aria-invalid="false"></textarea>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-body bg-gray-lighter">
+      <div class="row">
+        <div class="col-sm-12 col-md-4">
+
+          <button class="btn btn-labeled btn-info" type="submit" [disabled]="submitDisabled()">
+            <span class="btn-label"><i class="fa fa-save"></i></span>
+            Save Content
+          </button>
+
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <button (click)="resolveCancel()" class="btn btn-danger" type="button">
+            Cancel
+          </button>
+        </div>
+        <div class="col-sm-12 col-md-4 mt-xl" *ngIf="errorMessage">
+
+          <p class="text-danger">{{ errorMessage }}</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

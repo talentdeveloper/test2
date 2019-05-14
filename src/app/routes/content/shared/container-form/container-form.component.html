@@ -1,0 +1,65 @@
+<form [formGroup]="form" class="form-validate" role="form" name="containerForm" novalidate="" (submit)="handleOnSubmit($event, form.value)">
+  <div class="panel bb0">
+    <div class="panel-body bb bt">
+      <div class="row">
+        <div class="col-xs-12">
+  
+          <div class="form-group">
+            <label class="control-label">Container Image</label>
+            <app-image-crop-control #cropControl
+              canvasWidth="200"
+              canvasHeight="150"
+              width="200"
+              height="150"
+              croppedWidth="300"
+              croppedHeight="200"
+              label="Image"
+              [keepAspect]="false"
+              [existingImageSrc]="tileImagePath">
+            </app-image-crop-control>
+          </div>
+  
+          <div class="form-group">
+            <label class="control-label">Title</label>
+            <input
+              class="form-control"
+              placeholder="Title"
+              type="text"
+              formControlName="title"
+              tabindex="0"
+              aria-invalid="true">
+            <span class="text-danger" *ngIf="required(form.controls.title)">This field is required</span>
+          </div>
+  
+          <div class="form-group">
+            <label class="control-label">Notes</label>
+            <textarea class="form-control" placeholder="Notes" formControlName="notes" rows="4" aria-multiline="true" tabindex="0" aria-invalid="false"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel-body bg-gray-lighter">
+      <div class="row">
+        <div class="col-sm-12 col-md-4">
+          
+          <button class="btn btn-labeled btn-info" type="submit" [disabled]="!form.valid || !submitEnabled">
+            <span class="btn-label"><i class="fa fa-save"></i></span>
+            Save Container
+          </button>
+        
+        </div>
+        <div class="col-sm-12 col-md-4">
+          <button (click)="resolveCancel()" class="btn btn-danger" type="button">
+            Cancel
+          </button>
+        </div>
+        <div class="col-sm-12 col-md-4 mt-xl" *ngIf="errorMessage">
+    
+          <p class="text-danger">{{ errorMessage }}</p>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

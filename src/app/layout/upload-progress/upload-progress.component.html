@@ -1,0 +1,29 @@
+<div class="upload-progress-menu" *ngIf="!!uploads().length">
+  <button type="button" class="btn btn-link upload-progress-btn" (click)="openUploadListModal()">
+    Upload Progress ({{ completedUploads() }} / {{ uploads().length }})
+  </button>
+  <div class="modal fade upload-progress-modal" bsModal #uploadListModal="bs-modal" [config]="{backdrop: false}"
+    tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">
+            Content File Uploads
+          </h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="uploadListModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="upload" [ngClass]="{'bg-danger': upload.failed}" *ngFor="let upload of uploads()">
+            <div class="ml-lg pull-right">{{ upload.failed ? 'Upload Failed' : upload.percentComplete }}</div> {{upload.fileName}}
+          </div>
+          <button type="button" class="btn btn-link clear-completed-link" (click)="clearCompleted()">
+            Clear Completed Uploads
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

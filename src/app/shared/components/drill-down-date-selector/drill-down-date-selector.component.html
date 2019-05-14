@@ -1,0 +1,117 @@
+<!-- START Title and Date Filters -->
+<div class="row panel-heading range-selector-row">
+  <!-- Report Options Menu: Day, Month, or Year views -->
+  <div id="productFilterMenu" class="col-sm-2 btn-group" *ngIf="showProductFilterMenu()">
+    <button
+      type="button"
+      class="btn btn-default dropdown-toggle pull-left"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      {{ selectedProduct }} <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu view-options pull-left">
+      <li><a id="allProductsLink" href="#" (click)="setProductFilter('all')">All Products</a></li>
+      <li *ngIf="products.hasEngageData">
+        <a id="engageLink" href="#" (click)="setProductFilter('engage')">Engage</a>
+      </li>
+      <li *ngIf="products.hasFocusData">
+        <a id="focusLink" href="#" (click)="setProductFilter('focus')">Focus</a>
+      </li>
+      <li *ngIf="products.hasRehabData">
+        <a id="rehabLink" href="#" (click)="setProductFilter('rehab')">Rehab</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Day View Range Selector -->
+  <div
+    [ngClass]="{
+      'col-sm-offset-1': showProductFilterMenu(),
+      'col-sm-offset-3': !showProductFilterMenu()
+    }"
+    class="col-sm-6"
+    *ngIf="this.selectedRange.for === 'day'"
+  >
+    <div
+      class="col-sm-2 date-range-arrow-left"
+      [ngClass]="{ 'date-range-arrow-left-hidden': !showLeftArrow() }"
+      (click)="decrementDayViewDate()"
+    >
+      <i class="glyphicon glyphicon-chevron-left"></i>
+    </div>
+    <div class="col-sm-8 text-center date-range-value">
+      {{ title + (title ? ':' : '') }} <strong>{{ getDayViewDateString() }}</strong>
+    </div>
+    <div
+      class="col-sm-2"
+      [ngClass]="{ 'date-range-arrow-right': showRightArrow() }"
+      (click)="incrementDayViewDate()"
+    >
+      <i class="glyphicon glyphicon-chevron-right" *ngIf="showRightArrow()"></i>
+    </div>
+  </div>
+  <div class="col-sm-1" *ngIf="this.selectedRange.for === 'day'"></div>
+
+  <!-- Month View Range Selector -->
+  <div
+    [ngClass]="{ 'col-sm-8': showProductFilterMenu(), 'col-sm-10': !showProductFilterMenu() }"
+    class="range-column text-center"
+    *ngIf="this.selectedRange.for === 'month'"
+  >
+    {{ title + (title ? ':' : '') }} <strong>{{ getMonthViewDateString() }}</strong
+    ><br />
+    <div class="row mt-lg">
+      <div class="col-sm-offset-1 col-sm-11 text-center">
+        <button
+          [ngClass]="rangeButtonClass({ date: month.date })"
+          *ngFor="let month of monthNames"
+          (click)="setMonthViewDate(month.date)"
+          [disabled]="month.isFutureDate"
+        >
+          {{ month.name }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Year View Range Selector -->
+  <div
+    [ngClass]="{ 'col-sm-8': showProductFilterMenu(), 'col-sm-10': !showProductFilterMenu() }"
+    class="range-column text-center"
+    *ngIf="this.selectedRange.for === 'year'"
+  >
+    {{ title + (title ? ':' : '') }} <strong>{{ selectedRange.date.year() }}</strong>
+    <div class="row mt-lg">
+      <div class="col-sm-12 text-center">
+        <button
+          [ngClass]="rangeButtonClass({ year: year })"
+          *ngFor="let year of availableYears"
+          (click)="setYearViewDate(year)"
+        >
+          {{ year }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report Options Menu: Day, Month, or Year views -->
+  <div id="reportOptionsMenu" class="col-sm-2 btn-group">
+    <button
+      type="button"
+      class="btn btn-default dropdown-toggle pull-right"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      Report Options <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu view-options pull-right">
+      <li><a id="dayViewLink" href="#" (click)="setRange({ for: 'day' })">Day View</a></li>
+      <li><a id="monthViewLink" href="#" (click)="setRange({ for: 'month' })">Month View</a></li>
+      <li><a id="yearViewLink" href="#" (click)="setRange({ for: 'year' })">Year View</a></li>
+    </ul>
+  </div>
+</div>
+<!-- END Title and Date Filters -->

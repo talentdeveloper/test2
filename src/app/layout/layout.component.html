@@ -1,0 +1,21 @@
+<div class="wrapper">
+    <!-- top navbar-->
+    <app-header class="topnavbar-wrapper"></app-header>
+    <!-- sidebar-->
+    <app-sidebar class="aside"></app-sidebar>
+    <!-- offsidebar-->
+    <app-offsidebar class="offsidebar"></app-offsidebar>
+    <!-- Main section-->
+    <section>
+        <!-- Page content-->
+        <div class="content-wrapper">
+            <!-- Breadcrumb -->
+            <app-breadcrumb></app-breadcrumb>
+
+            <router-outlet></router-outlet>
+        </div>
+    </section>
+    <!-- Page footer-->
+    <footer app-footer class="text-center"></footer>
+    <app-layout-notification></app-layout-notification>
+</div>

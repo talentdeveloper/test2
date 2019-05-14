@@ -1,0 +1,6 @@
+<app-content-library-item-form
+  *ngIf="!!contentItem"
+  [libraryPath]="path"
+  [contentItem]="contentItem"
+  (changeEvent)="submit($event)"
+></app-content-library-item-form>

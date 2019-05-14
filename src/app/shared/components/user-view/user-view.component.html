@@ -1,0 +1,163 @@
+<div *ngIf="dataLoaded && user">
+  <div class="row" *ngIf="showEditButton">
+    <div class="col-xs-12 mb-lg text-right">
+      <a
+        class="btn btn-primary btn-outline"
+        href="#"
+        (click)="handleEditUserClick($event, user)"
+        *ngIf="showEditButton"
+      >
+        Edit Profile
+      </a>
+      <a class="btn btn-warning btn-outline ml" (click)="resetPin()" *ngIf="isFacilityUser()">
+        Reset PIN
+      </a>
+      <a
+        class="btn btn-primary btn-outline ml"
+        href="#"
+        (click)="handleChangePasswordClick($event, user)"
+        *ngIf="showChangePasswordButton && !isFacilityUser()"
+      >
+        Change Password
+      </a>
+      <a
+        class="btn btn-warning btn-outline ml"
+        (click)="handleSendUserResetClick($event, user)"
+        *ngIf="showSendResetButton && !isFacilityUser()"
+      >
+        Send Password Reset
+      </a>
+      <a
+        class="btn btn-danger btn-outline ml"
+        (click)="handleUserStateClick($event, user)"
+        *ngIf="showUserStateButton && userIsActive()"
+      >
+        Disable User
+      </a>
+      <a
+        class="btn btn-success btn-outline ml"
+        (click)="handleUserStateClick($event, user)"
+        *ngIf="showUserStateButton && !userIsActive()"
+      >
+        Activate User
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="lead bb">Profile</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4">First Name:</div>
+                  <div class="col-sm-8">
+                    <strong>{{ user.first_name }}</strong>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4">Last Name:</div>
+                  <div class="col-sm-8">
+                    <strong>{{ user.last_name }}</strong>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4">Title:</div>
+                  <div class="col-sm-8">
+                    <strong>{{ user.title }}</strong>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4">Profile Image:</div>
+                  <div class="col-sm-8">
+                    <img [appAttachmentSrc]="userImageSrc()" width="60" />
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <p class="lead bb">Account</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4">Account Type:</div>
+                  <div class="col-sm-8">
+                    <small class="pull-right" *ngIf="permissions.changeUserType">
+                      <a class="ml" [routerLink]="['/admin', 'user', user._id, 'account-type']"
+                        >Change</a
+                      >
+                    </small>
+                    <strong>{{ user.accountTypeName() }}</strong>
+                    <div *ngIf="accountName">
+                      <div class="text-muted ml">
+                        <small>Account: {{ accountName }}</small>
+                      </div>
+                      <div class="text-muted ml" *ngIf="facilityNames">
+                        <small>Communities: {{ facilityNames }}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-4">Status:</div>
+                  <div class="col-sm-8">
+                    <div class="label label-success" *ngIf="userIsActive()">Active</div>
+                    <div class="label label-warning" *ngIf="!userIsActive()">Inactive</div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <p class="lead bb">Contact</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4">Email:</div>
+                  <div class="col-sm-8">
+                    <strong>{{ user.email }}</strong>
+                  </div>
+                </div>
+                <div class="form-group" *ngIf="user.shouldCollectPhoneNumber()">
+                  <div class="col-sm-4">Phone:</div>
+                  <div class="col-sm-8">
+                    <strong>{{ user.phone }}</strong>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="col-sm-6" *ngIf="isFacilityUser()">
+              <p class="lead bb">Residents</p>
+              <form class="form-horizontal p-20">
+                <div class="form-group">
+                  <div class="col-sm-4">Resident Mode:</div>
+                  <div class="col-sm-8">{{ user.getResidentModeName() }}</div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-4">Residents:</div>
+                  <div class="col-sm-8">
+                    <div *ngFor="let resident of userResidents">
+                      {{ resident.first_name }} {{ resident.last_name }}
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer p-sm text-center">
+          <small class="text-small text-muted">Profile ID: {{ user._id }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <app-document-changed-by [document]="user || {}"></app-document-changed-by>
+    </div>
+  </div>
+</div>

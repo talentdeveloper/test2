@@ -1,0 +1,200 @@
+<!-- START Sidebar (left)-->
+<div class="aside-inner">
+  <nav
+    class="sidebar"
+    sidebar-anyclick-close=""
+    [class.show-scrollbar]="settings.layout.asideScrollbar"
+  >
+    <!-- START Sidebar Toggle -->
+    <ul class="nav" *ngIf="isContentUser()">
+      <li
+        class="fa fa-angle-double-left sidebar-collapse-icon pull-right"
+        (click)="toggleSidebar()"
+        *ngIf="!isSidebarCollapsed()"
+      ></li>
+
+      <li
+        class="fa fa-angle-double-right sidebar-expand-icon"
+        (click)="toggleSidebar()"
+        *ngIf="isSidebarCollapsed()"
+      ></li>
+    </ul>
+    <!-- END Sidebar Toggle -->
+
+    <!-- START sidebar nav-->
+    <ul class="nav" [ngStyle]="{ visibility: isSidebarCollapsed() ? 'hidden' : 'visible' }">
+      <!-- START user info-->
+      <li class="has-user-block"><app-userblock></app-userblock></li>
+      <!-- END user info-->
+
+      <li>
+        <app-sidebar-group name="Accounts & Communities" [main]="true" [alwaysShow]="true">
+          <app-sidebar-accounts-group
+            [clearParams]="[':facilityId']"
+            param=":accountId"
+            displayKey="profile.account_name"
+            placeholder="Select Account"
+            defaultRoute="/account/:accountId/dashboard"
+          >
+            <app-sidebar-link
+              href="/account/:accountId/dashboard"
+              text="Dashboard"
+              [role]="roles.ROLE_VIEW_ACCOUNT"
+            >
+            </app-sidebar-link>
+
+            <app-sidebar-link
+              href="/account/:accountId/"
+              text="Account Profile"
+              [role]="roles.ROLE_VIEW_ACCOUNT"
+            >
+            </app-sidebar-link>
+
+            <app-sidebar-group name="Communities" [alwaysShow]="true">
+              <app-sidebar-facilities-group
+                param=":facilityId"
+                paramDependency=":accountId"
+                displayKey="profile.name"
+                placeholder="Select Community"
+                defaultRoute="/account/:accountId/facility/:facilityId/dashboard"
+              >
+                <app-sidebar-link
+                  href="/account/:accountId/facility/:facilityId/dashboard"
+                  text="Dashboard"
+                  [role]="roles.ROLE_VIEW_FACILITY"
+                >
+                </app-sidebar-link>
+
+                <app-sidebar-link
+                  href="/account/:accountId/facility/:facilityId"
+                  text="Community Profile"
+                  [role]="roles.ROLE_VIEW_FACILITY"
+                >
+                </app-sidebar-link>
+
+                <app-sidebar-group
+                  name="Residents"
+                  defaultRoute="/account/:accountId/facility/:facilityId/resident"
+                >
+                  <app-sidebar-link
+                    href="/account/:accountId/facility/:facilityId/resident"
+                    text="Resident List"
+                    [role]="roles.ROLE_VIEW_RESIDENT"
+                  >
+                  </app-sidebar-link>
+                  <app-sidebar-link
+                    href="/account/:accountId/facility/:facilityId/resident/add"
+                    text="Add Resident"
+                    [role]="roles.ROLE_ADD_RESIDENT"
+                  >
+                  </app-sidebar-link>
+                </app-sidebar-group>
+
+                <app-sidebar-group
+                  name="Devices"
+                  defaultRoute="/account/:accountId/facility/:facilityId/devices"
+                >
+                  <app-sidebar-link
+                    href="/account/:accountId/facility/:facilityId/devices"
+                    text="Device List"
+                    [role]="roles.ROLE_VIEW_DEVICE"
+                  >
+                  </app-sidebar-link>
+                  <app-sidebar-link
+                    href="/account/:accountId/facility/:facilityId/devices/add"
+                    text="Add Device"
+                    [role]="roles.ROLE_ADD_DEVICE"
+                  >
+                  </app-sidebar-link>
+                </app-sidebar-group>
+
+                <app-sidebar-group
+                  name="Staff"
+                  defaultRoute="/account/:accountId/facility/:facilityId/staff"
+                >
+                  <app-sidebar-link
+                    href="/account/:accountId/facility/:facilityId/staff"
+                    text="Staff List"
+                    [role]="roles.ROLE_VIEW_FACILITY_STAFF"
+                  >
+                  </app-sidebar-link>
+                  <app-sidebar-link
+                    href="/account/:accountId/facility/:facilityId/staff/invite"
+                    text="Invite Staff"
+                    [role]="roles.ROLE_VIEW_FACILITY_STAFF"
+                  >
+                  </app-sidebar-link>
+                </app-sidebar-group>
+
+                <app-sidebar-link
+                  href="/account/:accountId/facility/:facilityId/messages/send"
+                  text="Notify All Users"
+                  [role]="roles.ROLE_NOTIFY_FACILITY_RESIDENTS"
+                >
+                </app-sidebar-link>
+              </app-sidebar-facilities-group>
+
+              <app-sidebar-link
+                href="/account/:accountId/facility/add"
+                text="Add Community"
+                [role]="roles.ROLE_ADD_FACILITY"
+              >
+              </app-sidebar-link>
+            </app-sidebar-group>
+
+            <app-sidebar-link
+              href="/account/:accountId/messages/send"
+              text="Notify All Users"
+              [role]="roles.ROLE_NOTIFY_ACCOUNT_RESIDENTS"
+            >
+            </app-sidebar-link>
+          </app-sidebar-accounts-group>
+
+          <app-sidebar-link
+            href="/account/add"
+            text="Create an Account"
+            [role]="roles.ROLE_ADD_ACCOUNT"
+          >
+          </app-sidebar-link>
+        </app-sidebar-group>
+      </li>
+
+      <li>
+        <app-sidebar-group name="Devices" [main]="true" [alwaysShow]="true">
+          <app-sidebar-link
+            href="/device/status"
+            text="Device Status List"
+            [role]="roles.ROLE_VIEW_DEVICE_STATUS"
+          >
+          </app-sidebar-link>
+        </app-sidebar-group>
+      </li>
+
+      <li>
+        <app-sidebar-group name="Content" [main]="true" [alwaysShow]="true">
+          <app-sidebar-link href="/content/library" text="Library" [role]="roles.ROLE_VIEW_CONTENT">
+          </app-sidebar-link>
+          <app-sidebar-link href="/content/catalog" text="Catalog" [role]="roles.ROLE_VIEW_CONTENT">
+          </app-sidebar-link>
+          <app-sidebar-link href="/content/layout" text="Layout" [role]="roles.ROLE_VIEW_CONTENT">
+          </app-sidebar-link>
+        </app-sidebar-group>
+      </li>
+
+      <li>
+        <app-sidebar-group name="Admin" [main]="true" [alwaysShow]="true">
+          <app-sidebar-link
+            href="/invite/list"
+            text="Open Invites"
+            [role]="roles.ROLE_ADMIN_MANAGE_INVITES"
+          >
+          </app-sidebar-link>
+          <app-sidebar-link href="/admin/user/list" text="Users" [role]="roles.ROLE_ADMIN_USERS">
+          </app-sidebar-link>
+        </app-sidebar-group>
+      </li>
+    </ul>
+    <!-- END sidebar nav-->
+  </nav>
+</div>
+<!-- END Sidebar (left)-->

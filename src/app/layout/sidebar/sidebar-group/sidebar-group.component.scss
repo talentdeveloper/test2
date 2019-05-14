@@ -1,0 +1,33 @@
+.sidebar-group {
+  cursor: default;
+
+  .heading {
+    padding: 12px 15px;
+    color: #919DA8;
+    font-size: 13px;
+    letter-spacing: .035em;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .children {
+    cursor: default;
+    margin-left: 20px;
+  }
+
+  .link-heading {
+    -webkit-animation: fadeInLeft 0.5s;
+    animation: fadeInLeft 0.5s;
+    display: block;
+    position: relative;
+    padding: 10px 0;
+    font-weight: normal;
+    background-color: transparent !important;
+    color: #515253;
+
+    &:hover {
+      text-decoration: none;
+      color: #23b7e5;
+    }
+  }
+}

@@ -1,0 +1,79 @@
+<div class="container-fluid">
+  <app-page-title title="Open User Invitation"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <a class="btn btn-primary btn-outline" routerLink="/invite/send">Send Invite</a>
+    </div>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body pt0 pb0">
+          <div class="row" *ngIf="!dataLoaded">
+            <div class="col-xs-12 p-xl">Loading ...</div>
+          </div>
+
+          <div class="row" *ngIf="dataLoaded">
+            <div class="col-xs-12 bg-gray-lighter pt pb">
+              <div class="row">
+                <div class="col-xs-12 col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+                    <input
+                      type="text"
+                      placeholder="Search by email address"
+                      [(ngModel)]="search"
+                      (ngModelChange)="filterUsers()"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 pl0 pr0">
+              <table class="table table-striped">
+                <tr>
+                  <th>Email</th>
+                  <th>Account</th>
+                  <th>Communities</th>
+                  <th>Invite Created</th>
+                  <th class="action-cell text-center">Action</th>
+                </tr>
+                <tr *ngFor="let user of filteredUsers">
+                  <td [id]="'email_' + cleanEmail(user.email)">
+                    <strong>{{ user.email }}</strong
+                    ><br />
+                    <small class="text-muted">{{ user.accountTypeName() }}</small>
+                  </td>
+                  <td [id]="'account_' + cleanEmail(user.email)">{{ accountNameForUser(user) }}</td>
+                  <td [id]="'facilities_' + cleanEmail(user.email)">
+                    {{ facilityNamesForUser(user) }}
+                  </td>
+                  <td [id]="'created_' + cleanEmail(user.email)">
+                    {{ user.created_date | date: 'mediumDate' }}
+                    {{ user.created_date | date: 'shortTime' }}
+                  </td>
+                  <td class="text-center">
+                    <a
+                      [id]="'deleteButton_' + cleanEmail(user.email)"
+                      class="btn btn-danger btn-outline btn-sm ml"
+                      (click)="handleDeleteInviteClick($event, user)"
+                    >
+                      Delete Invite
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p class="p-lg" *ngIf="!filteredUsers.length">
+                No open invites available.
+                <a class="btn" href="#" (click)="search = ''; filterUsers()" *ngIf="search.length"
+                  >Clear search</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

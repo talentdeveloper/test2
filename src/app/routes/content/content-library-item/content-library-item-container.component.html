@@ -1,0 +1,6 @@
+<app-content-library-item
+  *ngIf="!!contentItem"
+  [contentItem]="contentItem"
+  [itemAnalytics]="itemAnalytics"
+  (changeEvent)="changeEvent($event)"
+></app-content-library-item>

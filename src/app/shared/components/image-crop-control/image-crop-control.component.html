@@ -1,0 +1,106 @@
+<div class="image-cropper-container">
+  <div class="row">
+    <div class="col-xs-12 pb-sm">
+      <span class="text-danger">{{ uploadError }}</span>
+    </div>
+  </div>
+  <div class="row" *ngIf="!showUpload">
+    <div class="col-xs-12 col-sm-2" *ngIf="existingImageSrc">
+      <img [appAttachmentSrc]="existingImageSrc" class="img-responsive existing-img mb" />
+    </div>
+    <div class="col-xs-12 col-sm-4">
+      <label for="image-input" class="file-upload">
+        <button class="btn btn-default btn-block">
+          {{ existingImageSrc ? 'Change' : 'Choose' }} {{ label }}
+        </button>
+        <input id="image-input" type="file" (change)="fileChangeListener($event)" />
+      </label>
+      <label for="image-input" class="file-upload" *ngIf="!!existingImageSrc">
+        <button class="btn btn-default btn-block red-text" (click)="removeImage($event)">
+          Remove {{ label }}
+        </button>
+      </label>
+    </div>
+  </div>
+  <div class="row" [hidden]="!showUpload">
+    <div class="col-md-4">
+      <label for="image-input" class="file-upload" *ngIf="showUpload">
+        <button class="btn btn-default btn-block">Choose Different Image</button>
+        <input id="image-input" type="file" (change)="fileChangeListener($event)" />
+      </label>
+      <div class="text-center mt mb-xl">
+        <a href="#" class="text-small" (click)="cancelUpload()">Cancel upload</a>
+      </div>
+      <h5 class="text-small text-muted text-center">Preview</h5>
+      <div class="result" *ngIf="imageData.image">
+        <img
+          class="center-block img-responsive"
+          [class.img-circle]="cropperSettings.rounded"
+          [src]="imageData.image"
+          [width]="cropperSettings.croppedWidth"
+          [height]="cropperSettings.croppedHeight"
+        />
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Crop Image</h3>
+        </div>
+        <div class="panel-body text-center bg-gray-darker">
+          <img-cropper
+            #cropper
+            [image]="imageData"
+            [settings]="cropperSettings"
+            (onCrop)="cropped($event)"
+          ></img-cropper>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  bsModal
+  #removeImageModal="bs-modal"
+  [config]="{ backdrop: false }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="removeProfileImageConfirmation"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Remove Image Confirmation
+        </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="cancelConfirm()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="ml-sm">Are you sure you want to remove the {{ label.toLowerCase() }}?</p>
+        <div class="clearfix" *ngIf="!loading">
+          <button
+            type="button"
+            class="pull-right btn btn-info"
+            aria-label="RemoveImage"
+            (click)="removeImageConfirm()"
+          >
+            Confirm
+          </button>
+          <button
+            type="button"
+            class="pull-left btn btn-default"
+            aria-label="Cancel"
+            (click)="cancelConfirm()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

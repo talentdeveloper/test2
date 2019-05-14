@@ -1,0 +1,214 @@
+<div
+  class="modal fade"
+  bsModal
+  #residentContactModal="bs-modal"
+  [config]="{ backdrop: false, keyboard: false }"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">{{ editMode ? 'Edit' : 'Add' }} Contact</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form
+        [formGroup]="contactForm"
+        class="modal-body form-group"
+        *ngIf="!!contactForm"
+        (submit)="submitForm($event, contactForm.value)"
+      >
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">First Name</label>
+          </div>
+          <div class="col-sm-10">
+            <input
+              class="form-control"
+              placeholder="First Name"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [formControl]="contactForm.controls.first_name"
+            />
+            <span class="text-danger" *ngIf="required(contactForm.controls.first_name)"
+              >This field is required</span
+            >
+            <span
+              class="text-danger"
+              *ngIf="hasError(contactForm.controls.first_name, 'maxlength')"
+            >
+              This field has a maximum of
+              {{ contactForm.controls.first_name.errors.maxlength.requiredLength }}
+              characters
+            </span>
+          </div>
+        </div>
+
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">Last Name</label>
+          </div>
+          <div class="col-sm-10">
+            <input
+              class="form-control"
+              placeholder="Last Name"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [formControl]="contactForm.controls.last_name"
+            />
+            <span class="text-danger" *ngIf="required(contactForm.controls.last_name)"
+              >This field is required</span
+            >
+            <span class="text-danger" *ngIf="hasError(contactForm.controls.last_name, 'maxlength')">
+              This field has a maximum of
+              {{ contactForm.controls.last_name.errors.maxlength.requiredLength }}
+              characters
+            </span>
+          </div>
+        </div>
+
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">Relation</label>
+          </div>
+          <div class="col-sm-10">
+            <input
+              class="form-control"
+              placeholder="Relation"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [formControl]="contactForm.controls.relation"
+            />
+            <span class="text-danger" *ngIf="required(contactForm.controls.relation)"
+              >This field is required</span
+            >
+            <span class="text-danger" *ngIf="hasError(contactForm.controls.relation, 'maxlength')">
+              This field has a maximum of
+              {{ contactForm.controls.relation.errors.maxlength.requiredLength }}
+              characters
+            </span>
+          </div>
+        </div>
+
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">Description</label>
+          </div>
+          <div class="col-sm-10">
+            <input
+              class="form-control"
+              placeholder="Description"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [formControl]="contactForm.controls.description"
+            />
+            <span class="text-danger" *ngIf="required(contactForm.controls.description)"
+              >This field is required</span
+            >
+            <span
+              class="text-danger"
+              *ngIf="hasError(contactForm.controls.description, 'maxlength')"
+            >
+              This field has a maximum of
+              {{ contactForm.controls.description.errors.maxlength.requiredLength }}
+              characters
+            </span>
+          </div>
+        </div>
+
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">Email</label>
+          </div>
+          <div class="col-sm-10">
+            <input
+              class="form-control"
+              placeholder="Email"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [formControl]="contactForm.controls.email"
+            />
+          </div>
+        </div>
+
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">Cell Phone</label>
+          </div>
+          <div class="col-sm-10">
+            <input
+              class="form-control"
+              placeholder="Phone"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [formControl]="contactForm.controls.phone"
+              [textMask]="{ mask: phoneMask }"
+            />
+            <span class="text-danger" *ngIf="required(contactForm.controls.phone)"
+              >This field is required</span
+            >
+          </div>
+        </div>
+
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">Profile Image</label>
+          </div>
+          <div class="col-sm-10">
+            <app-image-crop-control
+              #contactImageCropControl
+              [existingImageSrc]="contactImageSrc"
+              (onRemoveImage)="markRemoveProfileImage()"
+              [label]="'Contact Image'"
+            >
+            </app-image-crop-control>
+          </div>
+        </div>
+
+        <div class="row form-row">
+          <div class="col-sm-2">
+            <label class="control-label">Skype User</label>
+          </div>
+          <div class="col-sm-10">
+            <input
+              class="form-control"
+              placeholder="Skype User"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [formControl]="contactForm.controls.skype_user"
+            />
+          </div>
+        </div>
+
+        <div class="clearfix">
+          <button
+            class="btn btn-labeled btn-info"
+            type="submit"
+            [disabled]="!this.contactForm.valid"
+          >
+            <span class="btn-label"><i class="fa fa-save"></i></span>
+            {{ editMode ? 'Save' : 'Add' }} Contact
+          </button>
+          <button
+            type="button"
+            class="pull-right btn btn-default"
+            aria-label="Close"
+            (click)="modal.hide()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

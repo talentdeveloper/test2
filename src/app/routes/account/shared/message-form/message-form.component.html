@@ -1,0 +1,52 @@
+<form
+  [formGroup]="form"
+  class="form-validate"
+  role="form"
+  name="deviceForm"
+  novalidate=""
+  (submit)="handleOnSubmit($event, form.value)"
+>
+  <div class="panel bb0">
+    <div class="panel-body bb bt">
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <div class="form-group">
+            <label class="control-label">Body Message</label>
+            <span class="text-danger" *ngIf="required(form.controls.body)"
+              >This field is required</span
+            >
+            <span class="text-danger" *ngIf="hasError(form.controls.body, 'maxlength')">
+              This field has a maximum of
+              {{ form.controls.body.errors.maxlength.requiredLength }} characters
+            </span>
+            <textarea
+              class="form-control"
+              placeholder="Body Message"
+              type="text"
+              name="body"
+              formControlName="body"
+              tabindex="0"
+              aria-invalid="true"
+            >
+            </textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-body bg-gray-lighter">
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <button class="btn btn-labeled btn-info" type="submit">
+            <span class="btn-label"><i class="fa fa-save"></i></span>
+            Send Message
+          </button>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-xl" *ngIf="successMessage || errorMessage">
+          <p *ngIf="successMessage" class="text-success">{{ successMessage }}</p>
+          <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

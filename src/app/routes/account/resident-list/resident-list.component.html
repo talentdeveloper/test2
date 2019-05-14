@@ -1,0 +1,156 @@
+<div class="container-fluid">
+  <app-page-title title="Residents"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12 mb-lg text-right">
+      <a
+        class="btn btn-primary btn-outline"
+        [routerLink]="['/account', accountId, 'facility', facilityId, 'resident', 'add']"
+        >Add Resident</a
+      >
+    </div>
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-body pt0 pb0">
+          <div class="row" *ngIf="!dataLoaded">
+            <div class="col-xs-12 p-xl">
+              Loading ...
+            </div>
+          </div>
+
+          <div class="row" *ngIf="dataLoaded">
+            <div class="col-xs-12 bg-gray-lighter pt pb">
+              <div class="row">
+                <div class="col-xs-12 col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-addon bg-primary"><em class="icon-magnifier"></em></div>
+                    <input
+                      type="text"
+                      placeholder="Search by resident name or room number"
+                      [(ngModel)]="search"
+                      (ngModelChange)="filterResidents()"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 pl0 pr0">
+              <table class="table table-striped">
+                <tr>
+                  <th class="name-cell" (click)="changeSort('name')">Name</th>
+                  <th class="status-cell text-center" (click)="changeSort('status')">Status</th>
+                  <th class="room-cell text-center" (click)="changeSort('room_number')">
+                    Room Number
+                  </th>
+                  <th class="action-cell text-center">Action</th>
+                </tr>
+                <tr *ngFor="let resident of filteredResidents">
+                  <td>
+                    <img
+                      class="mr-lg"
+                      [appAttachmentSrc]="profileImageForResident(resident)"
+                      width="40"
+                      height="40"
+                    />
+                    <a
+                      [routerLink]="[
+                        '/account',
+                        accountId,
+                        'facility',
+                        facilityId,
+                        'resident',
+                        resident._id
+                      ]"
+                    >
+                      <strong>{{ resident.last_name }}, {{ resident.first_name }}</strong>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <div class="label label-success" *ngIf="resident.isActive()">Active</div>
+                    <div class="label label-warning" *ngIf="!resident.isActive()">Inactive</div>
+                  </td>
+                  <td class="text-center">
+                    {{ resident.room_number }}
+                  </td>
+                  <td class="text-center">
+                    <a
+                      class="btn btn-primary btn-outline btn-sm mt-sm"
+                      [routerLink]="[
+                        '/account',
+                        accountId,
+                        'facility',
+                        facilityId,
+                        'resident',
+                        resident._id,
+                        'message',
+                        'send'
+                      ]"
+                      >Notify</a
+                    >
+                    <a
+                      class="btn btn-primary btn-outline btn-sm ml-sm mt-sm"
+                      [routerLink]="[
+                        '/account',
+                        accountId,
+                        'facility',
+                        facilityId,
+                        'resident',
+                        resident._id
+                      ]"
+                      >View</a
+                    >
+                    <a
+                      class="btn btn-warning btn-outline btn-sm ml-sm mt-sm"
+                      [routerLink]="[
+                        '/account',
+                        accountId,
+                        'facility',
+                        facilityId,
+                        'resident',
+                        resident._id,
+                        'edit'
+                      ]"
+                      >Edit</a
+                    >
+                    <a
+                      class="btn btn-purple btn-outline btn-sm ml-sm mt-sm"
+                      [routerLink]="[
+                        '/account',
+                        accountId,
+                        'facility',
+                        facilityId,
+                        'resident',
+                        resident._id,
+                        'move'
+                      ]"
+                      *ngIf="permissions.canMoveResident"
+                    >
+                      Move
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p class="p-lg" *ngIf="!filteredResidents.length">
+                No residents available.
+                <a
+                  class="btn"
+                  href="#"
+                  (click)="search = ''; filterResidents()"
+                  *ngIf="search.length"
+                  >Clear search</a
+                >
+                <a
+                  class="btn"
+                  [routerLink]="['/account', accountId, 'facility', facilityId, 'resident', 'add']"
+                  >Add Resident</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

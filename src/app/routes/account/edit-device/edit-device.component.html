@@ -1,0 +1,14 @@
+<div class="container-fluid">
+  <app-page-title title="Edit Device"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-device-form
+        *ngIf="device"
+        [device]="device"
+        (onSuccess)="onSuccess($event)"
+        (onCancel)="onCancel()"
+      ></app-device-form>
+    </div>
+  </div>
+</div>

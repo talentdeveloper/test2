@@ -1,0 +1,101 @@
+<div class="content-finder">
+  <form class="form-inline" (submit)="simulateDate($event)" [formGroup]="form">
+    <input bsDatepicker placement="bottom left" [bsConfig]="{containerClass: 'theme-blue'}"
+        type="text" formControlName="simulatedDate" class="simulate-date-field form-control" placeholder="Simulate Date">
+    <button type="submit" class="btn btn-info" [disabled]="form.pristine || required(form.controls.simulatedDate) || hasError(form.controls.simulatedDate, 'date')">Set</button>
+    <button type="button" class="btn btn-danger" (click)="clearSimulatedDate()">X</button>
+  </form>
+
+  <p class="text-bold mt-lg">
+    {{ totalContentItems }} Content Items
+  </p>
+
+  <div class="legend">
+    <h4 class="legend-header">Key</h4>
+    <div class="row">
+      <div class="legend-item col-sm-6">
+        <span class="btn btn-xs btn-danger status-icon"></span> Content QA
+      </div>
+      <div class="legend-item col-sm-6">
+        <span class="btn btn-xs btn-default status-icon"></span> Inactive
+      </div>
+    </div>
+    <div class="row">
+      <div class="legend-item col-sm-6">
+        <span class="btn btn-xs btn-primary status-icon"></span> Approved
+      </div>
+      <div class="legend-item col-sm-6">
+        <span class="btn btn-xs btn-inverse status-icon"></span> Canceled
+      </div>
+    </div>
+    <div class="row">
+      <div class="legend-item col-sm-6">
+        <span class="btn btn-xs btn-success status-icon"></span> Active
+      </div>
+      <div class="legend-item col-sm-6">
+        &nbsp;
+      </div>
+    </div>
+  </div>
+
+  <div class="content-tree-container">
+    <Tree #tree [nodes]="nodes" [focused]="true" [options]="ngTreeConfig">
+      <template #treeNodeFullTemplate
+        let-node="node"
+        let-index="index"
+        let-templates="templates">
+        <div
+          *ngIf="!node.isHidden"
+          class="tree-node tree-node-level-{{ node.level }}"
+          [class]="node.getClass()"
+          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
+          [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
+          [class.tree-node-leaf]="node.isLeaf"
+          [class.tree-node-active]="node.isActive"
+          [class.tree-node-focused]="node.isFocused">
+
+          <TreeNodeDropSlot *ngIf="index === 0 && !node.data.nodeOptions" [dropIndex]="index" [node]="node.parent">
+          </TreeNodeDropSlot>
+
+          <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+          <span class="node-expander">
+            <TreeNodeExpander [node]="node"></TreeNodeExpander>
+          </span>
+
+            <div class="node-content-wrapper node-item"
+              *ngIf="!node.data.nodeOptions"
+              (click)="node.mouseAction('click', $event)"
+              (dblclick)="node.mouseAction('dblClick', $event)"
+              (contextmenu)="node.mouseAction('contextMenu', $event)"
+              (treeDrop)="node.onDrop($event)"
+              [treeAllowDrop]="node.allowDrop.bind(node)"
+              [treeDrag]="node"
+              [ngClass]="{active: activeId === node.data.data._id}"
+              [treeDragEnabled]="node.allowDrag()"
+            >
+              <app-content-status [contentItem]="node.data.data"></app-content-status>
+            
+              <span [ngClass]="['status-icon','status-icon-' + node.data.data.content_status]"></span>
+            
+              <span class="node-title">{{ node.data.data.title }}</span>
+            
+              <TreeNodeContent [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
+            
+              </TreeNodeContent>
+            </div>
+
+            <div class="node-item node-option" *ngIf="node.data.nodeOptions" (click)="node.data.action(node.data.parentId)">
+              {{ node.data.title }}
+            </div>
+          </div>
+
+          <TreeNodeChildren [node]="node" [templates]="templates"></TreeNodeChildren>
+          <TreeNodeDropSlot *ngIf="!node.data.nodeOptions" [dropIndex]="index + 1" [node]="node.parent"></TreeNodeDropSlot>
+        </div>
+      </template>
+    </Tree>
+  </div>
+  <div class="mt-sm">
+    <a href="#" class="text-sm" (click)="handleCollapseAllClick()" *ngIf="!enableFilter && nodes.length">Collapse All</a>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="panel-body">
+  <div class="row">
+    <div class="col-sm-12 section-heading">
+      Communities
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default inner-panel">
+        <div class="panel-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th
+                  *ngFor="let column of columns"
+                  [ngTableSorting]="config"
+                  [column]="column"
+                  (sortChanged)="changeSort(column)"
+                >
+                  {{ column.title }}
+                  <i
+                    *ngIf="column.sort"
+                    class="fa"
+                    [ngClass]="{
+                      'fa-chevron-down': column.sort === 'desc',
+                      'fa-chevron-up': column.sort === 'asc'
+                    }"
+                  ></i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let facility of displayedList()">
+                <td>
+                  <a
+                    class="btn btn-link facility-link"
+                    [routerLink]="['/account', accountId, 'facility', facility.id, 'dashboard']"
+                  >
+                    {{ facility.name }}
+                  </a>
+                </td>
+                <td>
+                  {{ facility.residentCount }}
+                </td>
+                <td>
+                  {{ facility.residentsWithUsageCount }}
+                </td>
+                <td>
+                  {{ facility.deviceCount }}
+                </td>
+                <td>
+                  {{ facility.devicesWithUsageCount }}
+                </td>
+                <td>
+                  {{ facility.averageUsage.toFixed(2) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center big" *ngIf="reportData.length > shortListSize">
+            <div
+              class="fa fa-chevron-down text-primary align-bottom"
+              aria-hidden="true"
+              *ngIf="!displayFullList"
+              (click)="toggleListSize()"
+            ></div>
+            <div
+              class="fa fa-chevron-up text-primary align-bottom"
+              aria-hidden="true"
+              *ngIf="displayFullList"
+              (click)="toggleListSize()"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

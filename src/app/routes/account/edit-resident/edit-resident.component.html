@@ -1,0 +1,16 @@
+<div class="container-fluid" *ngIf="resident">
+  <app-page-title title="Edit {{ resident.first_name }} {{ resident.last__name }}"></app-page-title>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <app-resident-form
+        [editMode]="true"
+        *ngIf="accountId && facility && resident"
+        [resident]="resident"
+        [accountId]="accountId"
+        [facility]="facility"
+      >
+      </app-resident-form>
+    </div>
+  </div>
+</div>

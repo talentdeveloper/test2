@@ -1,0 +1,81 @@
+<div class="row" *ngIf="!viewReady">
+  <div class="col-xs-12">
+    Loading ...
+  </div>
+</div>
+
+<div class="row" *ngIf="viewReady">
+  <div class="col-xs-12">
+    <form
+      [formGroup]="inviteForm"
+      class="form-validate"
+      role="form"
+      name="inviteForm"
+      novalidate
+      (submit)="submitForm($event, inviteForm.value)"
+    >
+      <div class="panel panel-default bb0">
+        <div class="panel-body bb bt pb0">
+          <div class="row" *ngIf="!showFormSuccess">
+            <div class="col-xs-12">
+              <alert type="danger" *ngIf="errorMessage">
+                <i class="fa fa-exclamation-circle"></i>
+                {{ errorMessage }}
+              </alert>
+              <p>Invite someone to use the portal.</p>
+            </div>
+
+            <div class="col-xs-6">
+              <app-user-type-select [parentForm]="inviteForm"></app-user-type-select>
+            </div>
+          </div>
+
+          <div class="row bg-gray-lighter mt-lg pt-lg pb-lg" *ngIf="!showFormSuccess">
+            <div class="col-xs-12">
+              <button
+                class="btn btn-labeled btn-info"
+                type="submit"
+                [disabled]="!this.inviteForm.valid"
+              >
+                <span class="btn-label"><i class="fa fa-send"></i></span>
+                Create User
+              </button>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="showFormSuccess">
+            <div class="col-xs-12">
+              <alert type="success">
+                <i class="fa fa-check-circle-o"></i>
+                Success!
+                <span *ngIf="isFacilityUser">The facility user has been created.</span>
+                <span *ngIf="!isFacilityUser">An invitation has been sent.</span>
+              </alert>
+              <p *ngIf="isFacilityUser">
+                A <strong>Community User</strong> account has been created for
+                <strong
+                  >{{ inviteForm.get('firstName').value }}
+                  {{ inviteForm.get('lastName').value }}</strong
+                >. The temporary PIN is <strong>{{ inviteForm.get('pin').value }}</strong
+                >.
+              </p>
+              <p *ngIf="!isFacilityUser">
+                An invitation to add <strong>{{ inviteForm.get('email').value }}</strong> as a
+                <strong>{{ invitedAccountType() }}</strong> user has been sent.
+              </p>
+              <p *ngIf="!isFacilityUser">
+                A link and instructions will be provided to them in the invitation. They will be
+                asked to complete their profile before logging in to the iN2L Focus portal.
+              </p>
+              <p>
+                <a class="btn btn-primary btn-outline mt-sm mb" (click)="resetForm()"
+                  >Create Another User</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

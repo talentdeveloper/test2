@@ -1,0 +1,642 @@
+<form
+  [formGroup]="accountForm"
+  class="form-validate"
+  role="form"
+  name="addAccountForm"
+  novalidate=""
+  (submit)="submitForm($event, accountForm.value)"
+>
+  <div class="panel bb0">
+    <app-panel-title title="Profile"></app-panel-title>
+    <div class="panel-body bb bt" formGroupName="profile">
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <div class="form-group">
+            <label class="control-label">Account Name</label>
+            <input
+              class="form-control"
+              placeholder="Account Name"
+              type="text"
+              name="account_name"
+              formControlName="account_name"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="profile.controls['account_name'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="control-label">Corporate ID</label>
+            <select class="form-control" formControlName="corporate_id">
+              <option *ngFor="let corporation of corporateNames" [value]="corporation.id">
+                {{ corporation.name }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="profile.controls['corporate_id'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Address 1</label>
+            <input
+              class="form-control"
+              placeholder="Address Line 1"
+              formControlName="address1"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="profile.controls['address1'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Address 2 (optional)</label>
+            <input
+              class="form-control"
+              placeholder="Address Line 2 (optional)"
+              formControlName="address2"
+              type="text"
+              tabindex="0"
+              aria-invalid="false"
+            />
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="control-label">Country</label>
+            <select class="form-control" formControlName="country" [(ngModel)]="selectedCountry">
+              <option *ngFor="let country of countries" [value]="country.value">
+                {{ country.name }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="profile.controls['country'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-3">
+          <div class="form-group">
+            <label class="control-label">City</label>
+            <input
+              class="form-control"
+              placeholder="City"
+              formControlName="city"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="profile.controls['city'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedCountry == 'Canada'">
+          <div class="form-group">
+            <label class="control-label">Province</label>
+            <select class="form-control" formControlName="province">
+              <option *ngFor="let province of provinces" [value]="province.abbreviation">
+                {{ province.name }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="profile.controls['province'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedCountry == 'Canada'">
+          <div class="form-group">
+            <label class="control-label">Postal Code</label>
+            <input
+              class="form-control"
+              placeholder="Postal Code"
+              formControlName="postal_code"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="profile.controls['postal_code'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedCountry == 'United States'">
+          <div class="form-group has-feedback">
+            <label class="control-label">State</label>
+            <select class="form-control" formControlName="state">
+              <option *ngFor="let state of states" [value]="state.abbreviation">{{
+                state.name
+              }}</option>
+            </select>
+            <span class="text-danger" *ngIf="profile.controls['state'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedCountry == 'United States'">
+          <div class="form-group">
+            <label class="control-label">Zip Code</label>
+            <input
+              class="form-control"
+              placeholder="Zip Code"
+              formControlName="zip_code"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="profile.controls['zip_code'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-3">
+          <div class="form-group">
+            <label class="control-label">Telephone</label>
+            <input
+              class="form-control"
+              placeholder="Telephone"
+              formControlName="phone"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [textMask]="{ mask: phoneMask }"
+            />
+            <span class="text-danger" *ngIf="profile.controls.phone.hasError('phone')">
+              This field has an invalid phone number
+            </span>
+            <span class="text-danger" *ngIf="profile.controls['phone'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <div class="form-group">
+            <label class="control-label">Email Address</label>
+            <input
+              class="form-control"
+              placeholder="Email Address"
+              type="email"
+              formControlName="email"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="profile.controls['email'].hasError('required')"
+              >This field is required</span
+            >
+            <span
+              class="text-danger"
+              *ngIf="
+                profile.controls['email'].hasError('email') &&
+                (profile.controls['email'].dirty || profile.controls['email'].touched)
+              "
+              >This field must be a valid email address</span
+            >
+          </div>
+
+          <!-- // nest new row to get 50% width -->
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">Account Owner</label>
+                <input
+                  class="form-control"
+                  placeholder="Account Owner"
+                  type="text"
+                  formControlName="owner"
+                />
+                <span class="text-danger" *ngIf="profile.controls['owner'].hasError('required')"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">Account Manager</label>
+                <input
+                  class="form-control"
+                  placeholder="Account Manager"
+                  type="text"
+                  formControlName="manager"
+                />
+                <span class="text-danger" *ngIf="profile.controls['manager'].hasError('required')"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">CRM Account ID</label>
+                <input
+                  class="form-control"
+                  placeholder="CRM Account ID"
+                  type="text"
+                  formControlName="crm_id"
+                />
+                <span class="text-danger" *ngIf="profile.controls['crm_id'].hasError('required')"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+          </div>
+          <!-- // end nested 50% rows -->
+
+          <div class="form-group">
+            <label class="control-label">Account Notes</label>
+            <textarea
+              class="form-control"
+              placeholder="Accont Notes"
+              formControlName="notes"
+              rows="4"
+              aria-multiline="true"
+              tabindex="0"
+              aria-invalid="false"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- // end profile panel -->
+
+    <!-- // start billing panel -->
+    <app-panel-title title="Billing"></app-panel-title>
+    <div class="panel-body bt pb0" formGroupName="billing">
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <div class="form-group">
+            <label class="control-label">Account Billing ID</label>
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Account Billing ID"
+              formControlName="id"
+            />
+            <span class="text-danger" *ngIf="billing.controls['id'].hasError('required')"
+              >This field is required</span
+            >
+            <span class="text-danger" *ngIf="billing.controls['id'].hasError('pattern')">
+              Billing ID can only contain letters, numbers, and dashes
+            </span>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="control-label">Billing Status</label>
+            <select class="form-control" formControlName="status">
+              <option *ngFor="let status of billingStatus" [value]="status.value">
+                {{ status.name }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="billing.controls['status'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox c-checkbox needsclick">
+              <label class="needsclick">
+                <input class="needsclick" type="checkbox" formControlName="tax_exempt_status" />
+                <span class="fa fa-check"></span>
+                Tax Exempt
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox c-checkbox needsclick">
+              <label class="needsclick">
+                <input class="needsclick" type="checkbox" formControlName="non_profit_status" />
+                <span class="fa fa-check"></span>
+                Non-Profit
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="control-label">Billing Frequency</label>
+            <select class="form-control" formControlName="frequency">
+              <option *ngFor="let frequency of billingFrequency" [value]="frequency.value">
+                {{ frequency.name }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="billing.controls['frequency'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 col-md-4">
+          <div class="form-group">
+            <label class="control-label">Subscription Start Date</label>
+            <input
+              bsDatepicker
+              placement="bottom left"
+              [bsConfig]="{ containerClass: 'theme-blue' }"
+              class="form-control"
+              placeholder="Start Date (MM/DD/YY)"
+              type="text"
+              formControlName="subscription_start_date"
+            />
+            <span
+              class="text-danger"
+              *ngIf="
+                billing.controls['subscription_start_date'].hasError('date') ||
+                billing.controls['subscription_start_date'].hasError('dateNonExistent')
+              "
+              >Invalid date</span
+            >
+            <span
+              class="text-danger"
+              *ngIf="billing.controls['subscription_start_date'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Billing Due Date</label>
+            <input
+              bsDatepicker
+              placement="bottom left"
+              [bsConfig]="{ containerClass: 'theme-blue' }"
+              class="form-control"
+              placeholder="Due Date (MM/DD/YY)"
+              type="text"
+              formControlName="due_date"
+            />
+            <span
+              class="text-danger"
+              *ngIf="
+                billing.controls['due_date'].hasError('date') ||
+                billing.controls['due_date'].hasError('dateNonExistent')
+              "
+              >Invalid date</span
+            >
+            <span class="text-danger" *ngIf="billing.controls['due_date'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <h3>Billing Contact</h3>
+          <hr />
+
+          <!-- // nest new row to get 50% width -->
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">First Name</label>
+                <input
+                  class="form-control"
+                  placeholder="First Name"
+                  type="text"
+                  formControlName="contact_first_name"
+                />
+                <span
+                  class="text-danger"
+                  *ngIf="billing.controls['contact_first_name'].hasError('required')"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <label class="control-label">Last Name</label>
+                <input
+                  class="form-control"
+                  placeholder="Last Name"
+                  type="text"
+                  formControlName="contact_last_name"
+                />
+                <span
+                  class="text-danger"
+                  *ngIf="billing.controls['contact_last_name'].hasError('required')"
+                  >This field is required</span
+                >
+              </div>
+            </div>
+          </div>
+          <!-- // end nested 50% rows -->
+
+          <div class="form-group" *ngIf="!editMode">
+            <div class="checkbox c-checkbox needsclick">
+              <label class="needsclick">
+                <input
+                  class="needsclick"
+                  type="checkbox"
+                  (change)="populateBillingAddress($event)"
+                />
+                <span class="fa fa-check"></span>
+                Same as Account Address?
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Address 1</label>
+            <input
+              class="form-control"
+              placeholder="Address Line 1"
+              type="text"
+              formControlName="contact_address1"
+            />
+            <span
+              class="text-danger"
+              *ngIf="billing.controls['contact_address1'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Address 2 (optional)</label>
+            <input
+              class="form-control"
+              placeholder="Address Line 2 (optional)"
+              type="text"
+              formControlName="contact_address2"
+            />
+          </div>
+
+          <div class="form-group has-feedback">
+            <label class="control-label">Country</label>
+            <select
+              class="form-control"
+              formControlName="contact_country"
+              [(ngModel)]="selectedBillingCountry"
+            >
+              <option *ngFor="let country of countries" [value]="country.value">
+                {{ country.name }}
+              </option>
+            </select>
+            <span
+              class="text-danger"
+              *ngIf="billing.controls['contact_country'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-3">
+          <div class="form-group">
+            <label class="control-label">City</label>
+            <input
+              class="form-control"
+              placeholder="City"
+              formControlName="contact_city"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="billing.controls['contact_city'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedBillingCountry == 'Canada'">
+          <div class="form-group">
+            <label class="control-label">Province</label>
+            <select class="form-control" formControlName="contact_province">
+              <option *ngFor="let province of provinces" [value]="province.abbreviation">
+                {{ province.name }}
+              </option>
+            </select>
+            <span
+              class="text-danger"
+              *ngIf="billing.controls['contact_province'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedBillingCountry == 'Canada'">
+          <div class="form-group">
+            <label class="control-label">Postal Code</label>
+            <input
+              class="form-control"
+              placeholder="Postal Code"
+              formControlName="contact_postal_code"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span
+              class="text-danger"
+              *ngIf="billing.controls['contact_postal_code'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedBillingCountry == 'United States'">
+          <div class="form-group has-feedback">
+            <label class="control-label">State</label>
+            <select class="form-control" formControlName="contact_state">
+              <option *ngFor="let state of states" [value]="state.abbreviation">
+                {{ state.name }}
+              </option>
+            </select>
+            <span class="text-danger" *ngIf="billing.controls['contact_state'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-3" *ngIf="selectedBillingCountry == 'United States'">
+          <div class="form-group">
+            <label class="control-label">Zip Code</label>
+            <input
+              class="form-control"
+              placeholder="Zip Code"
+              formControlName="contact_zip_code"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span
+              class="text-danger"
+              *ngIf="billing.controls['contact_zip_code'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-3">
+          <div class="form-group ">
+            <label class="control-label">Telephone</label>
+            <input
+              class="form-control"
+              placeholder="Telephone"
+              formControlName="contact_phone"
+              type="text"
+              tabindex="0"
+              aria-invalid="true"
+              [textMask]="{ mask: phoneMask }"
+            />
+            <span class="text-danger" *ngIf="billing.controls.contact_phone.hasError('phone')">
+              This field has an invalid phone number
+            </span>
+            <span class="text-danger" *ngIf="billing.controls['contact_phone'].hasError('required')"
+              >This field is required</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <div class="form-group">
+            <label class="control-label">Email Address</label>
+            <input
+              class="form-control"
+              placeholder="Email Address"
+              type="email"
+              formControlName="contact_email"
+              tabindex="0"
+              aria-invalid="true"
+            />
+            <span class="text-danger" *ngIf="billing.controls['contact_email'].hasError('required')"
+              >This field is required</span
+            >
+            <span
+              class="text-danger"
+              *ngIf="
+                billing.controls['contact_email'].hasError('email') &&
+                (billing.controls['contact_email'].dirty ||
+                  billing.controls['contact_email'].touched)
+              "
+              >This field must be a valid email address</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="row bg-gray-lighter mt-lg pt-lg pb-lg">
+        <div class="col-sm-12 col-md-9">
+          <button class="btn btn-labeled btn-info" type="submit" [disabled]="saveDisabled()">
+            <span class="btn-label"><i class="fa fa-save"></i></span>
+            Save Account
+          </button>
+          <button class="btn btn-labeled pull-right" type="submit" (click)="cancel()">
+            <span class="btn-label"><i class="fa fa-close"></i></span>
+            Cancel
+          </button>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-xl" *ngIf="successMessage || errorMessage">
+          <p *ngIf="successMessage" class="text-success">{{ successMessage }}</p>
+          <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- // end action container panel -->
+  </div>
+</form>
+
+<app-document-changed-by [document]="account || {}"></app-document-changed-by>

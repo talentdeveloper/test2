@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-sm-8">
+    <ng-select
+      [allowClear]="true"
+      [items]="userOptions"
+      [disabled]="disabled"
+      (selected)="selected($event)"
+      placeholder="No user selected"
+    >
+    </ng-select>
+  </div>
+  <div class="col-sm-4">
+    <button
+      type="button"
+      class="btn btn-primary"
+      [routerLink]="inviteRouterLink()"
+      *ngIf="permissions.canInviteStaffAsAdmin || permissions.canInviteFacilityStaff"
+    >
+      Invite Staff
+    </button>
+  </div>
+</div>
